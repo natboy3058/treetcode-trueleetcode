@@ -38,15 +38,15 @@ export default function ExecutionPanel({ testCases, results, isExecuting }: Exec
   const activeResult = results[activeResultCaseIndex];
 
   return (
-    <div className="flex flex-col h-full bg-card">
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-grow flex flex-col h-full">
+    <div className="h-full bg-card border-t border-border">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
         <TabsList className="bg-card px-2 border-b rounded-none justify-start shrink-0">
           <TabsTrigger value="testcase">Test Case</TabsTrigger>
           <TabsTrigger value="result" disabled={results.length === 0}>Output</TabsTrigger>
         </TabsList>
-        <TabsContent value="testcase" className="flex-grow mt-0 min-h-0 h-full">
-          <ScrollArea className="h-full w-full">
-            <div className="p-2">
+        <TabsContent value="testcase" className="flex-1 mt-0 min-h-0">
+          <ScrollArea className="h-full">
+            <div className="p-4">
               {testCases.map((tc, index) => (
                  <div key={index} className="mb-2">
                   <p className="font-semibold text-sm">Case {index + 1}</p>
@@ -58,8 +58,8 @@ export default function ExecutionPanel({ testCases, results, isExecuting }: Exec
             </div>
           </ScrollArea>
         </TabsContent>
-        <TabsContent value="result" className="flex-grow mt-0 min-h-0 h-full">
-           <ScrollArea className="h-full w-full">
+        <TabsContent value="result" className="flex-1 mt-0 min-h-0">
+           <ScrollArea className="h-full">
             <div className="p-4 flex flex-col gap-4">
               {results.length > 0 && activeResult && (
                 <>

@@ -21,7 +21,6 @@ import { loadPyodide, PyodideInterface } from "pyodide";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
-
 export default function ProblemPage() {
   const { problemId } = useParams<{ problemId: string }>();
   const navigate = useNavigate();
@@ -266,14 +265,14 @@ result
   }
 
   return (
-    <main className="h-[calc(100vh-3.5rem)] w-screen overflow-hidden">
-      <div className="h-full w-full min-w-[900px]">
+    <main className="h-[calc(100vh-3.5rem)] w-full">
+      <div className="h-full w-full">
         <ResizablePanelGroup direction="horizontal">
-          <ResizablePanel defaultSize={45} minSize={30}>
+          <ResizablePanel defaultSize={45} minSize={30} className="h-full">
               <ProblemDescription problem={problem} selectedLanguage={selectedLanguage} submissions={submissions} />
           </ResizablePanel>
           <ResizableHandle withHandle />
-          <ResizablePanel defaultSize={55} minSize={30}>
+          <ResizablePanel defaultSize={55} minSize={30} className="h-full">
             <div className="h-full flex flex-col">
               <ResizablePanelGroup
                 direction="vertical"
@@ -283,8 +282,8 @@ result
                   }
                 }}
               >
-                <ResizablePanel defaultSize={100 - executionPanelSize} minSize={20}>
-                  <div className="h-full w-full flex flex-col overflow-hidden">
+                <ResizablePanel defaultSize={100 - executionPanelSize} minSize={20} className="h-full">
+                  <div className="h-full w-full flex flex-col">
                     <div className="p-2 border-b border-border bg-card flex items-center shrink-0">
                         <Select onValueChange={handleLanguageChange} defaultValue={selectedLanguage}>
                             <SelectTrigger className="w-[180px] h-8">
@@ -296,7 +295,7 @@ result
                             </SelectContent>
                         </Select>
                     </div>
-                    <div className="flex-1 h-0">
+                    <div className="flex-1 min-h-0">
                         <CodeEditor code={code} onChange={setCode} language={selectedLanguage} />
                     </div>
                   </div>
@@ -307,7 +306,7 @@ result
                   collapsible
                   collapsedSize={0}
                   minSize={0}
-                  className={executionPanelSize === 0 ? "hidden" : ""}
+                  className={`${executionPanelSize === 0 ? "hidden" : ""} h-full`}
                 >
                   {executionPanelSize > 0 && (
                     <ExecutionPanel

@@ -92,5 +92,31 @@
 
   body {
     @apply bg-background text-foreground;
+    overflow: hidden; /* Remove global scrollbars */
+  }
+
+  /* Make scrollbars more visible */
+  .scroll-area-thumb {
+    background-color: hsl(var(--border)) !important;
+    opacity: 1 !important;
+  }
+  
+  /* Custom scrollbar styling for better visibility */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
   }
 }

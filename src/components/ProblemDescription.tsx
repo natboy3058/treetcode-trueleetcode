@@ -210,24 +210,24 @@ const SolutionContent = ({ problem }: { problem: Problem }) => {
 
 export default function ProblemDescription({ problem, selectedLanguage, submissions }: ProblemDescriptionProps) {
   return (
-    <div className="h-full flex flex-col bg-card">
-      <Tabs defaultValue="question" className="w-full flex-grow flex flex-col h-full">
+    <div className="h-full bg-card border-r border-border">
+      <Tabs defaultValue="question" className="h-full flex flex-col">
         <TabsList className="px-2 border-b rounded-none bg-card justify-start shrink-0">
           <TabsTrigger value="question">Question</TabsTrigger>
           <TabsTrigger value="solution">Solution</TabsTrigger>
           <TabsTrigger value="submissions">Submissions</TabsTrigger>
         </TabsList>
-        <TabsContent value="question" className="flex-grow mt-0 min-h-0 h-full">
+        <TabsContent value="question" className="flex-1 mt-0 min-h-0">
           <ScrollArea className="h-full">
             <div className="p-4">
               <QuestionContent problem={problem} />
             </div>
           </ScrollArea>
         </TabsContent>
-        <TabsContent value="solution" className="flex-grow flex flex-col mt-0 min-h-0 h-full">
+        <TabsContent value="solution" className="flex-1 mt-0 min-h-0">
           <SolutionContent problem={problem} />
         </TabsContent>
-        <TabsContent value="submissions" className="flex-grow mt-0 min-h-0 h-full">
+        <TabsContent value="submissions" className="flex-1 mt-0 min-h-0">
           <ScrollArea className="h-full">
             <div className="p-4">
               <SubmissionsContent submissions={submissions} />
