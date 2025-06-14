@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
@@ -297,7 +296,7 @@ result
                             </SelectContent>
                         </Select>
                     </div>
-                    <div className="flex-1 h-0 overflow-hidden">
+                    <div className="flex-1 h-0">
                         <CodeEditor code={code} onChange={setCode} language={selectedLanguage} />
                     </div>
                   </div>
