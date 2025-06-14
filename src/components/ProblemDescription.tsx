@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Problem, Submission } from "@/lib/problems";
 import { Badge } from "@/components/ui/badge";
@@ -216,15 +217,15 @@ export default function ProblemDescription({ problem, selectedLanguage, submissi
           <TabsTrigger value="solution">Solution</TabsTrigger>
           <TabsTrigger value="submissions">Submissions</TabsTrigger>
         </TabsList>
-        <TabsContent value="question" className="flex-grow mt-0">
+        <TabsContent value="question" className="flex-grow mt-0 min-h-0">
           <ScrollArea className="h-full p-4">
             <QuestionContent problem={problem} />
           </ScrollArea>
         </TabsContent>
-        <TabsContent value="solution" className="flex-grow flex flex-col mt-0">
+        <TabsContent value="solution" className="flex-grow flex flex-col mt-0 min-h-0">
           <SolutionContent problem={problem} />
         </TabsContent>
-        <TabsContent value="submissions" className="flex-grow mt-0">
+        <TabsContent value="submissions" className="flex-grow mt-0 min-h-0">
           <ScrollArea className="h-full p-4">
             <SubmissionsContent submissions={submissions} />
           </ScrollArea>
