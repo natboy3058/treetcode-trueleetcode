@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
@@ -266,7 +267,7 @@ result
   }
 
   return (
-    <main className="h-[calc(100vh-3.5rem)] w-screen overflow-auto">
+    <main className="h-[calc(100vh-3.5rem)] w-screen overflow-hidden">
       <div className="h-full w-full min-w-[900px]">
         <ResizablePanelGroup direction="horizontal">
           <ResizablePanel defaultSize={45} minSize={30}>
