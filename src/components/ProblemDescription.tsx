@@ -216,15 +216,15 @@ export default function ProblemDescription({ problem, selectedLanguage, submissi
           <TabsTrigger value="solution">Solution</TabsTrigger>
           <TabsTrigger value="submissions">Submissions</TabsTrigger>
         </TabsList>
-        <TabsContent value="question" className="flex-grow mt-0 overflow-hidden">
+        <TabsContent value="question" className="flex-grow mt-0">
           <ScrollArea className="h-full p-4">
             <QuestionContent problem={problem} />
           </ScrollArea>
         </TabsContent>
-        <TabsContent value="solution" className="flex-grow flex flex-col mt-0 overflow-hidden">
+        <TabsContent value="solution" className="flex-grow flex flex-col mt-0">
           <SolutionContent problem={problem} />
         </TabsContent>
-        <TabsContent value="submissions" className="flex-grow mt-0 overflow-hidden">
+        <TabsContent value="submissions" className="flex-grow mt-0">
           <ScrollArea className="h-full p-4">
             <SubmissionsContent submissions={submissions} />
           </ScrollArea>

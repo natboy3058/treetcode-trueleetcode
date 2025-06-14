@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -43,7 +44,7 @@ export default function ExecutionPanel({ testCases, results, isExecuting }: Exec
           <TabsTrigger value="testcase">Test Case</TabsTrigger>
           <TabsTrigger value="result" disabled={results.length === 0}>Output</TabsTrigger>
         </TabsList>
-        <TabsContent value="testcase" className="flex-grow mt-0 overflow-hidden">
+        <TabsContent value="testcase" className="flex-grow mt-0">
           <ScrollArea className="h-full w-full p-2">
             {testCases.map((tc, index) => (
                <div key={index} className="mb-2">
@@ -55,7 +56,7 @@ export default function ExecutionPanel({ testCases, results, isExecuting }: Exec
             ))}
           </ScrollArea>
         </TabsContent>
-        <TabsContent value="result" className="flex-grow mt-0 overflow-hidden">
+        <TabsContent value="result" className="flex-grow mt-0">
            <ScrollArea className="h-full w-full">
             <div className="p-4 flex flex-col gap-4">
               {results.length > 0 && activeResult && (
