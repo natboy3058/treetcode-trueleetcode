@@ -15,6 +15,7 @@ export interface CodeVariant {
   language: "javascript" | "python";
   starterCode: string;
   starterFunctionName: string;
+  solution?: string;
 }
 
 export interface Problem {
@@ -59,6 +60,31 @@ var generateParenthesis = function(n) {
     // Write your code here
 };`,
         starterFunctionName: "generateParenthesis",
+        solution: `/**
+ * @param {number} n
+ * @return {string[]}
+ */
+var generateParenthesis = function(n) {
+    const result = [];
+    
+    function backtrack(s, left, right) {
+        if (s.length === 2 * n) {
+            result.push(s);
+            return;
+        }
+        
+        if (left < n) {
+            backtrack(s + '(', left + 1, right);
+        }
+        
+        if (right < left) {
+            backtrack(s + ')', left, right + 1);
+        }
+    }
+    
+    backtrack('', 0, 0);
+    return result;
+};`
       },
       {
         language: "python",
@@ -67,6 +93,23 @@ var generateParenthesis = function(n) {
     return []
 `,
         starterFunctionName: "generateParenthesis",
+        solution: `def generateParenthesis(n):
+    ans = []
+    def backtrack(S, left, right):
+        if len(S) == 2 * n:
+            ans.append("".join(S))
+            return
+        if left < n:
+            S.append("(")
+            backtrack(S, left + 1, right)
+            S.pop()
+        if right < left:
+            S.append(")")
+            backtrack(S, left, right + 1)
+            S.pop()
+    backtrack([], 0, 0)
+    return ans
+`
       },
     ],
     testCases: [

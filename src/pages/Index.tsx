@@ -230,7 +230,7 @@ result
     <main className="h-screen w-screen">
       <ResizablePanelGroup direction="horizontal">
         <ResizablePanel defaultSize={45} minSize={30}>
-            <ProblemDescription problem={problem} />
+            <ProblemDescription problem={problem} selectedLanguage={selectedLanguage} />
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={55} minSize={30}>
