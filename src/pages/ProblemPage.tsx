@@ -285,8 +285,8 @@ result
                 }}
               >
                 <ResizablePanel defaultSize={100 - executionPanelSize} minSize={20}>
-                  <div className="h-full w-full flex flex-col">
-                    <div className="p-2 border-b border-border bg-card flex items-center">
+                  <div className="h-full w-full flex flex-col overflow-hidden">
+                    <div className="p-2 border-b border-border bg-card flex items-center shrink-0">
                         <Select onValueChange={handleLanguageChange} defaultValue={selectedLanguage}>
                             <SelectTrigger className="w-[180px] h-8">
                                 <SelectValue placeholder="Select language" />
@@ -297,7 +297,7 @@ result
                             </SelectContent>
                         </Select>
                     </div>
-                    <div className="flex-grow h-0">
+                    <div className="flex-1 h-0 overflow-hidden">
                         <CodeEditor code={code} onChange={setCode} language={selectedLanguage} />
                     </div>
                   </div>
