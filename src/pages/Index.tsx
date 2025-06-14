@@ -1,11 +1,10 @@
-
 import { useState, useEffect } from "react";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { getProblem, Problem, TestCase, compareSolutions } from "@/lib/problems";
+import { getProblem, Problem, TestCase, compareSolutions, Submission, ExecutionResult } from "@/lib/problems";
 import ProblemDescription from "@/components/ProblemDescription";
 import CodeEditor from "@/components/CodeEditor";
 import ExecutionPanel from "@/components/ExecutionPanel";
@@ -23,7 +22,8 @@ import { loadPyodide, PyodideInterface } from "pyodide";
 export default function Index() {
   const [problem, setProblem] = useState<Problem | null>(null);
   const [code, setCode] = useState("");
-  const [results, setResults] = useState<any[]>([]);
+  const [results, setResults] = useState<ExecutionResult[]>([]);
+  const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [isActuallyExecuting, setIsActuallyExecuting] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<"python" | "javascript">("python");
   const [pyodide, setPyodide] = useState<PyodideInterface | null>(null);
@@ -87,6 +87,8 @@ export default function Index() {
 
   const handleRun = async () => {
     if (!problem) return;
+    setIsActuallyExecuting(true);
+    setResults([]);
     const exampleTestCases: TestCase[] = problem.examples.map(ex => {
         const inputVal = parseInt(ex.input.split(" = ")[1]);
         return {
@@ -94,30 +96,63 @@ export default function Index() {
             expected: JSON.parse(ex.output.replace(/'/g, '"'))
         };
     });
-    await executeCode(exampleTestCases, "run");
+    
+    let newResults: ExecutionResult[];
+    if (selectedLanguage === 'python') {
+      newResults = await executePythonCode(exampleTestCases);
+    } else {
+      newResults = await executeJavaScriptCode(exampleTestCases);
+    }
+    setResults(newResults);
+    setIsActuallyExecuting(false);
   };
   
   const handleSubmit = async () => {
     if (!problem) return;
-    await executeCode(problem.testCases, "submit");
-  };
-
-  const executeCode = async (testCases: TestCase[], type: "run" | "submit") => {
-    if (selectedLanguage === 'python') {
-      await executePythonCode(testCases, type);
-    } else {
-      await executeJavaScriptCode(testCases, type);
-    }
-  }
-
-  const executeJavaScriptCode = async (testCases: TestCase[], type: "run" | "submit") => {
-    if (!problem) return;
-    const variant = problem.codeVariants.find(v => v.language === "javascript");
-    if (!variant) return;
-
     setIsActuallyExecuting(true);
     setResults([]);
-    const newResults = [];
+    
+    let newResults: ExecutionResult[];
+    if (selectedLanguage === 'python') {
+      newResults = await executePythonCode(problem.testCases);
+    } else {
+      newResults = await executeJavaScriptCode(problem.testCases);
+    }
+    setResults(newResults);
+    setIsActuallyExecuting(false);
+
+    const hasError = newResults.some(r => typeof r.actual === 'string' && r.actual.startsWith('Error:'));
+    const allPassed = !hasError && newResults.length > 0 && newResults.every(r => r.passed);
+    let status: Submission['status'];
+    
+    if (hasError) {
+      status = "Error";
+      toast({ title: "Execution Error", description: "Your code has a runtime error.", variant: "destructive" });
+    } else if (allPassed) {
+      status = "Accepted";
+      toast({ title: "Accepted", description: "All test cases passed!", className: "bg-green-600 border-green-600 text-white" });
+    } else {
+      status = "Wrong Answer";
+      toast({ title: "Wrong Answer", description: "One or more test cases failed.", variant: "destructive" });
+    }
+
+    const newSubmission: Submission = {
+      id: Date.now().toString(),
+      code,
+      language: selectedLanguage,
+      status,
+      timestamp: Date.now(),
+      results: newResults,
+    };
+    setSubmissions(prev => [newSubmission, ...prev]);
+  };
+
+  const executeJavaScriptCode = async (testCases: TestCase[]): Promise<ExecutionResult[]> => {
+    if (!problem) return [];
+    const variant = problem.codeVariants.find(v => v.language === "javascript");
+    if (!variant) return [];
+
+    const newResults: ExecutionResult[] = [];
 
     for (const tc of testCases) {
       try {
@@ -144,33 +179,21 @@ export default function Index() {
           passed: false,
           runtime: "N/A",
         });
-        toast({ title: "Execution Error", description: error.message, variant: "destructive" });
         break;
       }
     }
-    setResults(newResults);
-    setIsActuallyExecuting(false);
-    if (type === 'submit') {
-      const allPassed = newResults.length > 0 && newResults.every(r => r.passed);
-      if (allPassed) {
-        toast({ title: "Accepted", description: "All test cases passed!", className: "bg-green-600 border-green-600 text-white" });
-      } else {
-        toast({ title: "Wrong Answer", description: "One or more test cases failed.", variant: "destructive" });
-      }
-    }
+    return newResults;
   }
 
-  const executePythonCode = async (testCases: TestCase[], type: "run" | "submit") => {
+  const executePythonCode = async (testCases: TestCase[]): Promise<ExecutionResult[]> => {
     if (!problem || !pyodide) {
       toast({ title: "Python Not Ready", description: "The Python environment is still loading or failed to load.", variant: "destructive" });
-      return;
+      return [];
     }
     const variant = problem.codeVariants.find(v => v.language === "python");
-    if (!variant) return;
+    if (!variant) return [];
 
-    setIsActuallyExecuting(true);
-    setResults([]);
-    const newResults = [];
+    const newResults: ExecutionResult[] = [];
 
     for (const tc of testCases) {
       try {
@@ -200,20 +223,10 @@ result
           passed: false,
           runtime: "N/A",
         });
-        toast({ title: "Execution Error", description: error.message, variant: "destructive" });
         break;
       }
     }
-    setResults(newResults);
-    setIsActuallyExecuting(false);
-    if (type === 'submit') {
-      const allPassed = newResults.length > 0 && newResults.every(r => r.passed);
-      if (allPassed) {
-        toast({ title: "Accepted", description: "All test cases passed!", className: "bg-green-600 border-green-600 text-white" });
-      } else {
-        toast({ title: "Wrong Answer", description: "One or more test cases failed.", variant: "destructive" });
-      }
-    }
+    return newResults;
   }
 
   const isExecuting = isActuallyExecuting || (selectedLanguage === 'python' && isPyodideLoading);
@@ -230,7 +243,7 @@ result
     <main className="h-screen w-screen">
       <ResizablePanelGroup direction="horizontal">
         <ResizablePanel defaultSize={45} minSize={30}>
-            <ProblemDescription problem={problem} selectedLanguage={selectedLanguage} />
+            <ProblemDescription problem={problem} selectedLanguage={selectedLanguage} submissions={submissions} />
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={55} minSize={30}>

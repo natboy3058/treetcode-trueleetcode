@@ -30,6 +30,23 @@ export interface Problem {
   testCases: TestCase[];
 }
 
+export interface ExecutionResult {
+  input: any;
+  expected: any;
+  actual: any;
+  passed: boolean;
+  runtime: string;
+}
+
+export interface Submission {
+  id: string;
+  code: string;
+  language: "javascript" | "python";
+  status: "Accepted" | "Wrong Answer" | "Error";
+  timestamp: number;
+  results: ExecutionResult[];
+}
+
 export const problems: Problem[] = [
   {
     id: "generate-parentheses",

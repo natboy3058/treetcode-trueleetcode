@@ -2,16 +2,7 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { TestCase } from "@/lib/problems";
-
-interface ExecutionResult {
-    input: any;
-    expected: any;
-    actual: any;
-    passed: boolean;
-    runtime: string;
-}
+import { TestCase, ExecutionResult } from "@/lib/problems";
 
 interface ExecutionPanelProps {
   testCases: TestCase[];
@@ -23,47 +14,91 @@ interface ExecutionPanelProps {
 
 export default function ExecutionPanel({ testCases, results, onRun, onSubmit, isExecuting }: ExecutionPanelProps) {
   const [activeTab, setActiveTab] = useState("testcase");
+  const [activeResultCaseIndex, setActiveResultCaseIndex] = useState(0);
 
   if (results.length > 0 && activeTab !== "result") {
       setActiveTab("result");
+      setActiveResultCaseIndex(0);
   } else if (results.length === 0 && activeTab !== "testcase") {
       setActiveTab("testcase");
   }
 
+  const getOverallStatus = () => {
+    if (!results || results.length === 0) return { text: "", className: "" };
+    const hasError = results.some(r => typeof r.actual === 'string' && r.actual.startsWith('Error:'));
+    if (hasError) return { text: "Runtime Error", className: "text-red-500" };
+    const allPassed = results.every(r => r.passed);
+    if (allPassed) return { text: "Accepted", className: "text-green-500" };
+    return { text: "Wrong Answer", className: "text-red-500" };
+  }
+
+  const passedCount = results.filter(r => r.passed).length;
+  const totalCount = results.length;
+  const activeResult = results[activeResultCaseIndex];
+
   return (
     <div className="flex flex-col h-full bg-card">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-grow flex flex-col">
-        <TabsList className="bg-card">
-          <TabsTrigger value="testcase">Testcases</TabsTrigger>
-          <TabsTrigger value="result" disabled={results.length === 0}>Result</TabsTrigger>
+        <TabsList className="bg-card px-2 border-b rounded-none justify-start shrink-0">
+          <TabsTrigger value="testcase">Test Case</TabsTrigger>
+          <TabsTrigger value="result" disabled={results.length === 0}>Output</TabsTrigger>
         </TabsList>
         <TabsContent value="testcase" className="flex-grow overflow-y-auto p-2">
           {testCases.map((tc, index) => (
              <div key={index} className="mb-2">
               <p className="font-semibold text-sm">Case {index + 1}</p>
-              <Card className="mt-1 bg-background">
-                <CardContent className="p-2 text-xs font-mono">
-                  Input: {JSON.stringify(tc.input)}
-                </CardContent>
-              </Card>
+              <div className="mt-1 bg-background p-2 text-xs font-mono rounded-md">
+                Input: {JSON.stringify(tc.input)}
+              </div>
             </div>
           ))}
         </TabsContent>
-        <TabsContent value="result" className="flex-grow overflow-y-auto p-2">
-           {results.map((result, index) => (
-            <Card key={index} className={`mb-2 border-l-4 ${result.passed ? 'border-green-500' : 'border-red-500'}`}>
-              <CardContent className="p-2">
-                <p className={`font-semibold text-sm ${result.passed ? 'text-green-500' : 'text-red-500'}`}>
-                  Case {index + 1}: {result.passed ? 'Passed' : 'Failed'}
-                </p>
-                <div className="text-xs font-mono mt-2 bg-background p-2 rounded space-y-1">
-                  <p><strong>Input:</strong> {JSON.stringify(result.input)}</p>
-                  <p><strong>Expected:</strong> {JSON.stringify(result.expected)}</p>
-                  <p><strong>Got:</strong> {JSON.stringify(result.actual)}</p>
+        <TabsContent value="result" className="flex-grow overflow-y-auto p-4 flex flex-col gap-4">
+           {results.length > 0 && activeResult && (
+             <>
+               <div className="flex justify-between items-center">
+                 <h2 className={`text-xl font-bold ${getOverallStatus().className}`}>{getOverallStatus().text}</h2>
+                 <p className="text-sm font-medium">Passed: {passedCount} / {totalCount}</p>
+               </div>
+               
+               <div className="flex gap-2 flex-wrap">
+                 {results.map((result, index) => (
+                   <Button
+                     key={index}
+                     variant={activeResultCaseIndex === index ? (result.passed ? 'default' : 'destructive') : 'outline'}
+                     size="sm"
+                     onClick={() => setActiveResultCaseIndex(index)}
+                     className={`${activeResultCaseIndex === index && result.passed && 'bg-green-600 hover:bg-green-700'}`}
+                   >
+                     Case {index + 1}
+                   </Button>
+                 ))}
+               </div>
+
+                <div className="font-mono text-sm space-y-4">
+                  {typeof activeResult.actual === 'string' && activeResult.actual.startsWith('Error:') && (
+                    <div>
+                      <p className="font-semibold text-red-500">Stderr:</p>
+                      <pre className="bg-destructive/20 text-destructive p-2 rounded-md mt-1 text-xs whitespace-pre-wrap">{activeResult.actual}</pre>
+                    </div>
+                  )}
+                  <div>
+                    <p className="font-semibold">Input:</p>
+                    <pre className="bg-background p-2 rounded-md mt-1 text-xs">{JSON.stringify(activeResult.input)}</pre>
+                  </div>
+                  <div>
+                    <p className="font-semibold">Expected Output:</p>
+                    <pre className="bg-background p-2 rounded-md mt-1 text-xs">{JSON.stringify(activeResult.expected)}</pre>
+                  </div>
+                  {!activeResult.passed && !(typeof activeResult.actual === 'string' && activeResult.actual.startsWith('Error:')) && (
+                     <div>
+                       <p className="font-semibold">Your Output:</p>
+                       <pre className="bg-background p-2 rounded-md mt-1 text-xs">{JSON.stringify(activeResult.actual)}</pre>
+                     </div>
+                  )}
                 </div>
-              </CardContent>
-            </Card>
-           ))}
+             </>
+           )}
         </TabsContent>
       </Tabs>
       <div className="p-2 border-t border-border flex justify-end items-center gap-2">

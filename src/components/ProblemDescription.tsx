@@ -1,14 +1,22 @@
 
-import { Problem } from "@/lib/problems";
+import { Problem, Submission } from "@/lib/problems";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CodeEditor from "@/components/CodeEditor";
+import { formatRelative } from "date-fns";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 interface ProblemDescriptionProps {
   problem: Problem;
   selectedLanguage: "javascript" | "python";
+  submissions: Submission[];
 }
 
 const QuestionContent = ({ problem }: { problem: Problem }) => (
@@ -61,7 +69,60 @@ const QuestionContent = ({ problem }: { problem: Problem }) => (
   </>
 );
 
-export default function ProblemDescription({ problem, selectedLanguage }: ProblemDescriptionProps) {
+const getStatusClass = (status: Submission["status"]) => {
+  switch (status) {
+    case "Accepted":
+      return "text-green-500";
+    case "Wrong Answer":
+      return "text-red-500";
+    case "Error":
+      return "text-yellow-500";
+    default:
+      return "text-foreground";
+  }
+};
+
+const SubmissionsContent = ({ submissions }: { submissions: Submission[] }) => {
+  if (submissions.length === 0) {
+    return <p>You have not made any submissions for this problem yet.</p>;
+  }
+
+  return (
+    <Accordion type="single" collapsible className="w-full">
+      {submissions.map((submission) => (
+        <AccordionItem value={submission.id} key={submission.id}>
+          <AccordionTrigger className="hover:no-underline">
+            <div className="flex items-center justify-between w-full pr-4">
+              <span className={`font-semibold ${getStatusClass(submission.status)}`}>
+                {submission.status}
+              </span>
+              <span className="text-sm text-muted-foreground">
+                {formatRelative(new Date(submission.timestamp), new Date())}
+              </span>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent>
+            <div className="flex flex-col gap-2">
+              <div className="text-xs">
+                <Badge variant="outline">{submission.language}</Badge>
+              </div>
+              <div className="h-64 border rounded-md overflow-hidden">
+                <CodeEditor
+                  code={submission.code}
+                  language={submission.language}
+                  readOnly
+                />
+              </div>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      ))}
+    </Accordion>
+  );
+};
+
+
+export default function ProblemDescription({ problem, selectedLanguage, submissions }: ProblemDescriptionProps) {
   const solutionVariant = problem.codeVariants.find(v => v.language === selectedLanguage);
   
   return (
@@ -87,7 +148,7 @@ export default function ProblemDescription({ problem, selectedLanguage }: Proble
             )}
         </TabsContent>
         <TabsContent value="submissions" className="p-4 overflow-y-auto flex-grow">
-          <p>You have not made any submissions for this problem yet.</p>
+          <SubmissionsContent submissions={submissions} />
         </TabsContent>
       </Tabs>
     </div>
