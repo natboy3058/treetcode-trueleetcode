@@ -31,7 +31,7 @@ const QuestionContent = ({ problem }: { problem: Problem }) => (
     >
       {problem.difficulty}
     </Badge>
-    <p className="mt-4 text-sm text-foreground/80">{problem.description}</p>
+    <p className="mt-4 text-sm text-foreground/80 break-words">{problem.description}</p>
     
     <Separator className="my-6" />
 
@@ -40,14 +40,14 @@ const QuestionContent = ({ problem }: { problem: Problem }) => (
         <p className="font-semibold text-sm">Example {index + 1}:</p>
         <Card className="mt-2 bg-background">
           <CardContent className="p-4">
-            <p className="font-mono text-xs">
+            <p className="font-mono text-xs break-words">
               <strong>Input:</strong> {example.input}
             </p>
-            <p className="font-mono text-xs mt-2">
+            <p className="font-mono text-xs mt-2 break-words">
               <strong>Output:</strong> {example.output}
             </p>
             {example.explanation && (
-              <p className="font-mono text-xs mt-2">
+              <p className="font-mono text-xs mt-2 break-words">
                 <strong>Explanation:</strong> {example.explanation}
               </p>
             )}
@@ -62,7 +62,7 @@ const QuestionContent = ({ problem }: { problem: Problem }) => (
       <p className="font-semibold text-sm">Constraints:</p>
       <ul className="list-disc list-inside mt-2 space-y-1">
         {problem.constraints.map((constraint, index) => (
-          <li key={index} className="font-mono text-xs">{constraint}</li>
+          <li key={index} className="font-mono text-xs break-words">{constraint}</li>
         ))}
       </ul>
     </div>

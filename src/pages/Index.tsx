@@ -240,45 +240,47 @@ result
   }
 
   return (
-    <main className="h-screen w-screen">
-      <ResizablePanelGroup direction="horizontal">
-        <ResizablePanel defaultSize={45} minSize={30}>
-            <ProblemDescription problem={problem} selectedLanguage={selectedLanguage} submissions={submissions} />
-        </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={55} minSize={30}>
-          <ResizablePanelGroup direction="vertical">
-            <ResizablePanel defaultSize={65} minSize={20}>
-              <div className="h-full w-full flex flex-col">
-                <div className="p-2 border-b border-border bg-card flex items-center">
-                    <Select onValueChange={handleLanguageChange} defaultValue={selectedLanguage}>
-                        <SelectTrigger className="w-[180px] h-8">
-                            <SelectValue placeholder="Select language" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="python">Python</SelectItem>
-                            <SelectItem value="javascript">JavaScript</SelectItem>
-                        </SelectContent>
-                    </Select>
+    <main className="h-screen w-screen overflow-auto">
+      <div className="h-full w-full min-w-[900px]">
+        <ResizablePanelGroup direction="horizontal">
+          <ResizablePanel defaultSize={45} minSize={30}>
+              <ProblemDescription problem={problem} selectedLanguage={selectedLanguage} submissions={submissions} />
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel defaultSize={55} minSize={30}>
+            <ResizablePanelGroup direction="vertical">
+              <ResizablePanel defaultSize={65} minSize={20}>
+                <div className="h-full w-full flex flex-col">
+                  <div className="p-2 border-b border-border bg-card flex items-center">
+                      <Select onValueChange={handleLanguageChange} defaultValue={selectedLanguage}>
+                          <SelectTrigger className="w-[180px] h-8">
+                              <SelectValue placeholder="Select language" />
+                          </SelectTrigger>
+                          <SelectContent>
+                              <SelectItem value="python">Python</SelectItem>
+                              <SelectItem value="javascript">JavaScript</SelectItem>
+                          </SelectContent>
+                      </Select>
+                  </div>
+                  <div className="flex-grow h-0">
+                      <CodeEditor code={code} onChange={setCode} language={selectedLanguage} />
+                  </div>
                 </div>
-                <div className="flex-grow h-0">
-                    <CodeEditor code={code} onChange={setCode} language={selectedLanguage} />
-                </div>
-              </div>
-            </ResizablePanel>
-            <ResizableHandle withHandle />
-            <ResizablePanel defaultSize={35} minSize={20}>
-              <ExecutionPanel
-                testCases={problem.examples.map(ex => ({input: parseInt(ex.input.split(" = ")[1]), expected: JSON.parse(ex.output.replace(/'/g, '"'))}))}
-                results={results}
-                onRun={handleRun}
-                onSubmit={handleSubmit}
-                isExecuting={isExecuting}
-              />
-            </ResizablePanel>
-          </ResizablePanelGroup>
-        </ResizablePanel>
-      </ResizablePanelGroup>
+              </ResizablePanel>
+              <ResizableHandle withHandle />
+              <ResizablePanel defaultSize={35} minSize={20}>
+                <ExecutionPanel
+                  testCases={problem.examples.map(ex => ({input: parseInt(ex.input.split(" = ")[1]), expected: JSON.parse(ex.output.replace(/'/g, '"'))}))}
+                  results={results}
+                  onRun={handleRun}
+                  onSubmit={handleSubmit}
+                  isExecuting={isExecuting}
+                />
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </div>
     </main>
   );
 }

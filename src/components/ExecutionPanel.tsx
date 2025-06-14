@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -48,7 +49,7 @@ export default function ExecutionPanel({ testCases, results, onRun, onSubmit, is
           {testCases.map((tc, index) => (
              <div key={index} className="mb-2">
               <p className="font-semibold text-sm">Case {index + 1}</p>
-              <div className="mt-1 bg-background p-2 text-xs font-mono rounded-md">
+              <div className="mt-1 bg-background p-2 text-xs font-mono rounded-md break-words">
                 Input: {JSON.stringify(tc.input)}
               </div>
             </div>
@@ -85,16 +86,16 @@ export default function ExecutionPanel({ testCases, results, onRun, onSubmit, is
                   )}
                   <div>
                     <p className="font-semibold">Input:</p>
-                    <pre className="bg-background p-2 rounded-md mt-1 text-xs">{JSON.stringify(activeResult.input)}</pre>
+                    <pre className="bg-background p-2 rounded-md mt-1 text-xs whitespace-pre-wrap">{JSON.stringify(activeResult.input)}</pre>
                   </div>
                   <div>
                     <p className="font-semibold">Expected Output:</p>
-                    <pre className="bg-background p-2 rounded-md mt-1 text-xs">{JSON.stringify(activeResult.expected)}</pre>
+                    <pre className="bg-background p-2 rounded-md mt-1 text-xs whitespace-pre-wrap">{JSON.stringify(activeResult.expected)}</pre>
                   </div>
                   {!activeResult.passed && !(typeof activeResult.actual === 'string' && activeResult.actual.startsWith('Error:')) && (
                      <div>
                        <p className="font-semibold">Your Output:</p>
-                       <pre className="bg-background p-2 rounded-md mt-1 text-xs">{JSON.stringify(activeResult.actual)}</pre>
+                       <pre className="bg-background p-2 rounded-md mt-1 text-xs whitespace-pre-wrap">{JSON.stringify(activeResult.actual)}</pre>
                      </div>
                   )}
                 </div>
