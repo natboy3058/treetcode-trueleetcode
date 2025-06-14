@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   ResizableHandle,
@@ -18,6 +18,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { loadPyodide, PyodideInterface } from "pyodide";
+import { Button } from "@/components/ui/button";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 
 export default function ProblemPage() {
@@ -32,8 +34,16 @@ export default function ProblemPage() {
   const [selectedLanguage, setSelectedLanguage] = useState<"python" | "javascript">("python");
   const [pyodide, setPyodide] = useState<PyodideInterface | null>(null);
   const [isPyodideLoading, setIsPyodideLoading] = useState(true);
+  const [executionPanelSize, setExecutionPanelSize] = useState(35);
+  const lastExecutionPanelSize = useRef(35);
 
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (executionPanelSize > 0) {
+      lastExecutionPanelSize.current = executionPanelSize;
+    }
+  }, [executionPanelSize]);
 
   useEffect(() => {
     if (!problemId) {
@@ -241,6 +251,10 @@ result
     return newResults;
   }
 
+  const toggleConsole = () => {
+    setExecutionPanelSize(size => size > 0 ? 0 : lastExecutionPanelSize.current);
+  };
+
   const isExecuting = isActuallyExecuting || (selectedLanguage === 'python' && isPyodideLoading);
 
   if (!problem) {
@@ -260,36 +274,65 @@ result
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize={55} minSize={30}>
-            <ResizablePanelGroup direction="vertical">
-              <ResizablePanel defaultSize={65} minSize={20}>
-                <div className="h-full w-full flex flex-col">
-                  <div className="p-2 border-b border-border bg-card flex items-center">
-                      <Select onValueChange={handleLanguageChange} defaultValue={selectedLanguage}>
-                          <SelectTrigger className="w-[180px] h-8">
-                              <SelectValue placeholder="Select language" />
-                          </SelectTrigger>
-                          <SelectContent>
-                              <SelectItem value="python">Python</SelectItem>
-                              <SelectItem value="javascript">JavaScript</SelectItem>
-                          </SelectContent>
-                      </Select>
+            <div className="h-full flex flex-col">
+              <ResizablePanelGroup
+                direction="vertical"
+                onLayout={(sizes: number[]) => {
+                  if (sizes.length > 1) {
+                    setExecutionPanelSize(sizes[1]);
+                  }
+                }}
+              >
+                <ResizablePanel defaultSize={100 - executionPanelSize} minSize={20}>
+                  <div className="h-full w-full flex flex-col">
+                    <div className="p-2 border-b border-border bg-card flex items-center">
+                        <Select onValueChange={handleLanguageChange} defaultValue={selectedLanguage}>
+                            <SelectTrigger className="w-[180px] h-8">
+                                <SelectValue placeholder="Select language" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="python">Python</SelectItem>
+                                <SelectItem value="javascript">JavaScript</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="flex-grow h-0">
+                        <CodeEditor code={code} onChange={setCode} language={selectedLanguage} />
+                    </div>
                   </div>
-                  <div className="flex-grow h-0">
-                      <CodeEditor code={code} onChange={setCode} language={selectedLanguage} />
-                  </div>
+                </ResizablePanel>
+                <ResizableHandle withHandle />
+                <ResizablePanel
+                  defaultSize={executionPanelSize}
+                  collapsible
+                  collapsedSize={0}
+                  minSize={0}
+                  className={executionPanelSize === 0 ? "hidden" : ""}
+                >
+                  {executionPanelSize > 0 && (
+                    <ExecutionPanel
+                      testCases={problem.testCases.slice(0,3)}
+                      results={results}
+                      isExecuting={isExecuting}
+                    />
+                  )}
+                </ResizablePanel>
+              </ResizablePanelGroup>
+              <div className="p-2 border-t border-border flex justify-between items-center shrink-0 bg-card">
+                <Button variant="ghost" onClick={toggleConsole} className="text-muted-foreground">
+                  Console
+                  {executionPanelSize > 0 ? <ChevronDown className="h-4 w-4 ml-1" /> : <ChevronUp className="h-4 w-4 ml-1" />}
+                </Button>
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" onClick={handleRun} disabled={isExecuting}>
+                    {isExecuting ? 'Running...' : 'Run'}
+                  </Button>
+                  <Button className="bg-green-600 hover:bg-green-700 text-primary-foreground" onClick={handleSubmit} disabled={isExecuting}>
+                    {isExecuting ? 'Submitting...' : 'Submit'}
+                  </Button>
                 </div>
-              </ResizablePanel>
-              <ResizableHandle withHandle />
-              <ResizablePanel defaultSize={35} minSize={20}>
-                <ExecutionPanel
-                  testCases={problem.testCases.slice(0,3)}
-                  results={results}
-                  onRun={handleRun}
-                  onSubmit={handleSubmit}
-                  isExecuting={isExecuting}
-                />
-              </ResizablePanel>
-            </ResizablePanelGroup>
+              </div>
+            </div>
           </ResizablePanel>
         </ResizablePanelGroup>
       </div>

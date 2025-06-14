@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Problem, Submission } from "@/lib/problems";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +13,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ProblemDescriptionProps {
   problem: Problem;
@@ -145,63 +145,65 @@ const SolutionContent = ({ problem }: { problem: Problem }) => {
   }
 
   return (
-    <div className="p-4 flex flex-col overflow-y-auto h-full">
-      <h2 className="text-xl font-bold mb-4 shrink-0">
-        {problem.solutionInfo!.approachTitle}
-      </h2>
-      <Tabs defaultValue={defaultTab} className="w-full flex-grow flex flex-col">
-        <TabsList className="border-b rounded-none bg-card justify-start shrink-0 -mx-4 px-4">
+    <ScrollArea className="h-full">
+      <div className="p-4">
+        <h2 className="text-xl font-bold mb-4 shrink-0">
+          {problem.solutionInfo!.approachTitle}
+        </h2>
+        <Tabs defaultValue={defaultTab} className="w-full flex-grow flex flex-col">
+          <TabsList className="border-b rounded-none bg-card justify-start shrink-0 -mx-4 px-4">
+            {problem.codeVariants.map((variant) =>
+              variant.solution ? (
+                <TabsTrigger
+                  key={variant.language}
+                  value={variant.language}
+                  className="capitalize"
+                >
+                  {variant.language}
+                </TabsTrigger>
+              ) : null
+            )}
+          </TabsList>
+
           {problem.codeVariants.map((variant) =>
             variant.solution ? (
-              <TabsTrigger
+              <TabsContent
                 key={variant.language}
                 value={variant.language}
-                className="capitalize"
+                className="mt-4 flex-grow"
               >
-                {variant.language}
-              </TabsTrigger>
+                <div className="h-96 mb-6 border rounded-md overflow-hidden">
+                  <CodeEditor
+                    code={variant.solution}
+                    language={variant.language}
+                    readOnly
+                  />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">
+                    Time & Space Complexity
+                  </h3>
+                  <ul className="list-disc list-inside space-y-2 text-sm">
+                    <li>
+                      Time complexity:{" "}
+                      <code className="bg-muted font-mono px-2 py-1 rounded-md">
+                        {problem.solutionInfo!.timeComplexity}
+                      </code>
+                    </li>
+                    <li>
+                      Space complexity:{" "}
+                      <code className="bg-muted font-mono px-2 py-1 rounded-md">
+                        {problem.solutionInfo!.spaceComplexity}
+                      </code>
+                    </li>
+                  </ul>
+                </div>
+              </TabsContent>
             ) : null
           )}
-        </TabsList>
-
-        {problem.codeVariants.map((variant) =>
-          variant.solution ? (
-            <TabsContent
-              key={variant.language}
-              value={variant.language}
-              className="mt-4 flex-grow"
-            >
-              <div className="h-96 mb-6 border rounded-md overflow-hidden">
-                <CodeEditor
-                  code={variant.solution}
-                  language={variant.language}
-                  readOnly
-                />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold mb-2">
-                  Time & Space Complexity
-                </h3>
-                <ul className="list-disc list-inside space-y-2 text-sm">
-                  <li>
-                    Time complexity:{" "}
-                    <code className="bg-muted font-mono px-2 py-1 rounded-md">
-                      {problem.solutionInfo!.timeComplexity}
-                    </code>
-                  </li>
-                  <li>
-                    Space complexity:{" "}
-                    <code className="bg-muted font-mono px-2 py-1 rounded-md">
-                      {problem.solutionInfo!.spaceComplexity}
-                    </code>
-                  </li>
-                </ul>
-              </div>
-            </TabsContent>
-          ) : null
-        )}
-      </Tabs>
-    </div>
+        </Tabs>
+      </div>
+    </ScrollArea>
   );
 };
 
@@ -214,14 +216,18 @@ export default function ProblemDescription({ problem, selectedLanguage, submissi
           <TabsTrigger value="solution">Solution</TabsTrigger>
           <TabsTrigger value="submissions">Submissions</TabsTrigger>
         </TabsList>
-        <TabsContent value="question" className="p-4 overflow-y-auto flex-grow">
-          <QuestionContent problem={problem} />
+        <TabsContent value="question" className="flex-grow mt-0 overflow-hidden">
+          <ScrollArea className="h-full p-4">
+            <QuestionContent problem={problem} />
+          </ScrollArea>
         </TabsContent>
         <TabsContent value="solution" className="flex-grow flex flex-col mt-0 overflow-hidden">
           <SolutionContent problem={problem} />
         </TabsContent>
-        <TabsContent value="submissions" className="p-4 overflow-y-auto flex-grow flex flex-col">
-          <SubmissionsContent submissions={submissions} />
+        <TabsContent value="submissions" className="flex-grow mt-0 overflow-hidden">
+          <ScrollArea className="h-full p-4">
+            <SubmissionsContent submissions={submissions} />
+          </ScrollArea>
         </TabsContent>
       </Tabs>
     </div>
