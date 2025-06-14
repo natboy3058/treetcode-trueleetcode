@@ -18,6 +18,12 @@ export interface CodeVariant {
   solution?: string;
 }
 
+export interface SolutionInfo {
+  approachTitle: string;
+  timeComplexity: string;
+  spaceComplexity: string;
+}
+
 export interface Problem {
   id: string;
   title: string;
@@ -28,6 +34,7 @@ export interface Problem {
   codeVariants: CodeVariant[];
   defaultLanguage: "javascript" | "python";
   testCases: TestCase[];
+  solutionInfo?: SolutionInfo;
 }
 
 export interface ExecutionResult {
@@ -138,6 +145,11 @@ var generateParenthesis = function(n) {
       },
       { input: 4, expected: ["(((())))","((()()))","((())())","((()))()","(()(()))","(()()())","(()())()","(())(())","(())()()","()((()))","()(()())","()(())()","()()(())","()()()()"] },
     ],
+    solutionInfo: {
+      approachTitle: "Backtracking",
+      timeComplexity: "O(4^n / n^(3/2))",
+      spaceComplexity: "O(n)",
+    },
   },
 ];
 

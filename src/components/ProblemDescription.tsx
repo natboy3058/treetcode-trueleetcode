@@ -136,15 +136,29 @@ export default function ProblemDescription({ problem, selectedLanguage, submissi
         <TabsContent value="question" className="p-4 overflow-y-auto flex-grow">
           <QuestionContent problem={problem} />
         </TabsContent>
-        <TabsContent value="solution" className="flex-grow h-0 overflow-hidden">
-           {solutionVariant?.solution ? (
-              <CodeEditor 
-                code={solutionVariant.solution} 
-                language={selectedLanguage} 
-                readOnly 
-              />
+        <TabsContent value="solution" className="p-4 overflow-y-auto flex-grow">
+           {solutionVariant?.solution && problem.solutionInfo ? (
+              <div>
+                <h2 className="text-2xl font-bold mb-4">{problem.solutionInfo.approachTitle}</h2>
+                <div className="h-96 mb-6 border rounded-md overflow-hidden">
+                   <CodeEditor 
+                    code={solutionVariant.solution} 
+                    language={selectedLanguage} 
+                    readOnly 
+                  />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">Time & Space Complexity</h3>
+                  <ul className="list-disc list-inside space-y-2 text-sm">
+                    <li>Time complexity: <code className="bg-muted font-mono px-2 py-1 rounded-md">{problem.solutionInfo.timeComplexity}</code></li>
+                    <li>Space complexity: <code className="bg-muted font-mono px-2 py-1 rounded-md">{problem.solutionInfo.spaceComplexity}</code></li>
+                  </ul>
+                </div>
+              </div>
             ) : (
-              <div className="p-4">No solution available for this language yet.</div>
+              <div className="p-4 text-muted-foreground">
+                {solutionVariant?.solution ? 'Solution details are not available for this problem yet.' : 'No solution available for this language yet.'}
+              </div>
             )}
         </TabsContent>
         <TabsContent value="submissions" className="p-4 overflow-y-auto flex-grow">
