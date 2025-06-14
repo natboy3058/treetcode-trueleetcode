@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Problem, Submission } from "@/lib/problems";
 import { Badge } from "@/components/ui/badge";
@@ -123,75 +124,84 @@ const SubmissionsContent = ({ submissions }: { submissions: Submission[] }) => {
 };
 
 const SolutionContent = ({ problem }: { problem: Problem }) => {
-  const [selectedLang, setSelectedLang] = useState<"javascript" | "python">(
-    problem.defaultLanguage
-  );
+  if (!problem.solutionInfo || !problem.codeVariants.some(v => v.solution)) {
+    return (
+      <div className="p-4 text-muted-foreground h-full flex items-center justify-center">
+        Solution is not available for this problem yet.
+      </div>
+    );
+  }
 
-  const solutionVariant = problem.codeVariants.find(
-    (v) => v.language === selectedLang
-  );
+  const defaultTab = problem.codeVariants.find(v => v.language === problem.defaultLanguage && v.solution)
+    ? problem.defaultLanguage
+    : problem.codeVariants.find(v => v.solution)?.language || "";
+
+  if (!defaultTab) {
+     return (
+      <div className="p-4 text-muted-foreground h-full flex items-center justify-center">
+        Solution is not available for this problem yet.
+      </div>
+    );
+  }
 
   return (
-    <>
-      <div className="-mx-4 -mt-4 mb-4 px-2 border-b">
-        <div className="flex gap-1">
-          {problem.codeVariants.map((variant) =>
-            variant.solution ? (
-              <Button
-                key={variant.language}
-                variant="ghost"
-                onClick={() => setSelectedLang(variant.language)}
-                className={`capitalize rounded-none h-auto py-3 px-4 text-sm font-medium border-b-2 ${
-                  selectedLang === variant.language
-                    ? "border-primary text-primary"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {variant.language}
-              </Button>
-            ) : null
-          )}
-        </div>
-      </div>
+    <Tabs defaultValue={defaultTab} className="w-full flex-grow flex flex-col">
+      <TabsList className="px-4 border-b rounded-none bg-card justify-start shrink-0">
+        {problem.codeVariants.map((variant) =>
+          variant.solution ? (
+            <TabsTrigger
+              key={variant.language}
+              value={variant.language}
+              className="capitalize"
+            >
+              {variant.language}
+            </TabsTrigger>
+          ) : null
+        )}
+      </TabsList>
 
-      {solutionVariant?.solution && problem.solutionInfo ? (
-        <div>
-          <h2 className="text-xl font-bold mb-4">
-            {problem.solutionInfo.approachTitle}
-          </h2>
-          <div className="h-96 mb-6 border rounded-md overflow-hidden">
-            <CodeEditor
-              code={solutionVariant.solution}
-              language={selectedLang}
-              readOnly
-            />
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold mb-2">
-              Time & Space Complexity
-            </h3>
-            <ul className="list-disc list-inside space-y-2 text-sm">
-              <li>
-                Time complexity:{" "}
-                <code className="bg-muted font-mono px-2 py-1 rounded-md">
-                  {problem.solutionInfo.timeComplexity}
-                </code>
-              </li>
-              <li>
-                Space complexity:{" "}
-                <code className="bg-muted font-mono px-2 py-1 rounded-md">
-                  {problem.solutionInfo.spaceComplexity}
-                </code>
-              </li>
-            </ul>
-          </div>
-        </div>
-      ) : (
-        <div className="text-muted-foreground pt-4">
-          Solution not available for this language.
-        </div>
+      {problem.codeVariants.map((variant) =>
+        variant.solution ? (
+          <TabsContent
+            key={variant.language}
+            value={variant.language}
+            className="p-4 mt-0 flex-grow overflow-y-auto"
+          >
+            <div>
+              <h2 className="text-xl font-bold mb-4">
+                {problem.solutionInfo!.approachTitle}
+              </h2>
+              <div className="h-96 mb-6 border rounded-md overflow-hidden">
+                <CodeEditor
+                  code={variant.solution}
+                  language={variant.language}
+                  readOnly
+                />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold mb-2">
+                  Time & Space Complexity
+                </h3>
+                <ul className="list-disc list-inside space-y-2 text-sm">
+                  <li>
+                    Time complexity:{" "}
+                    <code className="bg-muted font-mono px-2 py-1 rounded-md">
+                      {problem.solutionInfo!.timeComplexity}
+                    </code>
+                  </li>
+                  <li>
+                    Space complexity:{" "}
+                    <code className="bg-muted font-mono px-2 py-1 rounded-md">
+                      {problem.solutionInfo!.spaceComplexity}
+                    </code>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </TabsContent>
+        ) : null
       )}
-    </>
+    </Tabs>
   );
 };
 
@@ -207,7 +217,7 @@ export default function ProblemDescription({ problem, selectedLanguage, submissi
         <TabsContent value="question" className="p-4 overflow-y-auto flex-grow">
           <QuestionContent problem={problem} />
         </TabsContent>
-        <TabsContent value="solution" className="p-4 overflow-y-auto flex-grow">
+        <TabsContent value="solution" className="flex-grow flex flex-col mt-0">
           <SolutionContent problem={problem} />
         </TabsContent>
         <TabsContent value="submissions" className="p-4 overflow-y-auto flex-grow">
