@@ -1,4 +1,3 @@
-
 import _ from 'lodash';
 
 export interface Example {
@@ -12,6 +11,12 @@ export interface TestCase {
   expected: any;
 }
 
+export interface CodeVariant {
+  language: "javascript" | "python";
+  starterCode: string;
+  starterFunctionName: string;
+}
+
 export interface Problem {
   id: string;
   title: string;
@@ -19,8 +24,8 @@ export interface Problem {
   description: string;
   examples: Example[];
   constraints: string[];
-  starterCode: string;
-  starterFunctionName: string;
+  codeVariants: CodeVariant[];
+  defaultLanguage: "javascript" | "python";
   testCases: TestCase[];
 }
 
@@ -42,14 +47,28 @@ export const problems: Problem[] = [
       },
     ],
     constraints: ["1 <= n <= 8"],
-    starterCode: `/**
+    defaultLanguage: "python",
+    codeVariants: [
+      {
+        language: "javascript",
+        starterCode: `/**
  * @param {number} n
  * @return {string[]}
  */
 var generateParenthesis = function(n) {
     // Write your code here
 };`,
-    starterFunctionName: "generateParenthesis",
+        starterFunctionName: "generateParenthesis",
+      },
+      {
+        language: "python",
+        starterCode: `def generateParenthesis(n):
+    # Write your code here
+    return []
+`,
+        starterFunctionName: "generateParenthesis",
+      },
+    ],
     testCases: [
       { input: 1, expected: ["()"] },
       { input: 2, expected: ["(())", "()()"] },
