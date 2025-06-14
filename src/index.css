@@ -95,21 +95,47 @@
     overflow: hidden;
   }
 
-  /* Enhanced custom scrollbar styling - always visible like CodeMirror */
+  /* Force scrollbars to be always visible and match CodeMirror style */
   [data-radix-scroll-area-scrollbar] {
     opacity: 1 !important;
-    background: hsl(var(--muted)) !important;
+    visibility: visible !important;
+    background: rgba(45, 45, 45, 0.2) !important;
+    transition: none !important;
+  }
+  
+  [data-radix-scroll-area-scrollbar]:hover {
+    opacity: 1 !important;
+    background: rgba(45, 45, 45, 0.3) !important;
   }
   
   [data-radix-scroll-area-thumb] {
-    background: hsl(var(--muted-foreground)) !important;
-    opacity: 0.8 !important;
-    border-radius: 4px !important;
+    background: rgba(100, 100, 100, 0.6) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    border-radius: 3px !important;
+    transition: background-color 0.2s ease !important;
   }
   
   [data-radix-scroll-area-thumb]:hover {
-    background: hsl(var(--foreground)) !important;
+    background: rgba(140, 140, 140, 0.8) !important;
     opacity: 1 !important;
+  }
+
+  /* Dark theme adjustments */
+  .dark [data-radix-scroll-area-scrollbar] {
+    background: rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  .dark [data-radix-scroll-area-scrollbar]:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+  }
+  
+  .dark [data-radix-scroll-area-thumb] {
+    background: rgba(200, 200, 200, 0.4) !important;
+  }
+  
+  .dark [data-radix-scroll-area-thumb]:hover {
+    background: rgba(200, 200, 200, 0.6) !important;
   }
 
   /* Fallback scrollbar styling for any native scrollbars */
@@ -119,17 +145,15 @@
   }
   
   ::-webkit-scrollbar-track {
-    background: hsl(var(--muted));
+    background: rgba(45, 45, 45, 0.2);
   }
   
   ::-webkit-scrollbar-thumb {
-    background: hsl(var(--muted-foreground));
-    border-radius: 4px;
-    opacity: 0.8;
+    background: rgba(100, 100, 100, 0.6);
+    border-radius: 3px;
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--foreground));
-    opacity: 1;
+    background: rgba(140, 140, 140, 0.8);
   }
 }
