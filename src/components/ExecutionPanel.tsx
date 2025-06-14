@@ -39,24 +39,26 @@ export default function ExecutionPanel({ testCases, results, isExecuting }: Exec
 
   return (
     <div className="flex flex-col h-full bg-card">
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-grow flex flex-col">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-grow flex flex-col h-full">
         <TabsList className="bg-card px-2 border-b rounded-none justify-start shrink-0">
           <TabsTrigger value="testcase">Test Case</TabsTrigger>
           <TabsTrigger value="result" disabled={results.length === 0}>Output</TabsTrigger>
         </TabsList>
-        <TabsContent value="testcase" className="flex-grow mt-0 min-h-0">
-          <ScrollArea className="h-full w-full p-2">
-            {testCases.map((tc, index) => (
-               <div key={index} className="mb-2">
-                <p className="font-semibold text-sm">Case {index + 1}</p>
-                <div className="mt-1 bg-background p-2 text-xs font-mono rounded-md break-words">
-                  Input: {JSON.stringify(tc.input)}
+        <TabsContent value="testcase" className="flex-grow mt-0 min-h-0 h-full">
+          <ScrollArea className="h-full w-full">
+            <div className="p-2">
+              {testCases.map((tc, index) => (
+                 <div key={index} className="mb-2">
+                  <p className="font-semibold text-sm">Case {index + 1}</p>
+                  <div className="mt-1 bg-background p-2 text-xs font-mono rounded-md break-words">
+                    Input: {JSON.stringify(tc.input)}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </ScrollArea>
         </TabsContent>
-        <TabsContent value="result" className="flex-grow mt-0 min-h-0">
+        <TabsContent value="result" className="flex-grow mt-0 min-h-0 h-full">
            <ScrollArea className="h-full w-full">
             <div className="p-4 flex flex-col gap-4">
               {results.length > 0 && activeResult && (
