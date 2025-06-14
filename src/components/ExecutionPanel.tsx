@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { TestCase, ExecutionResult } from "@/lib/problems";
@@ -16,12 +15,14 @@ export default function ExecutionPanel({ testCases, results, onRun, onSubmit, is
   const [activeTab, setActiveTab] = useState("testcase");
   const [activeResultCaseIndex, setActiveResultCaseIndex] = useState(0);
 
-  if (results.length > 0 && activeTab !== "result") {
+  useEffect(() => {
+    if (results.length > 0) {
       setActiveTab("result");
       setActiveResultCaseIndex(0);
-  } else if (results.length === 0 && activeTab !== "testcase") {
+    } else {
       setActiveTab("testcase");
-  }
+    }
+  }, [results]);
 
   const getOverallStatus = () => {
     if (!results || results.length === 0) return { text: "", className: "" };
