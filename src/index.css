@@ -95,47 +95,67 @@
     overflow: hidden;
   }
 
-  /* Force scrollbars to be always visible and match CodeMirror style */
-  [data-radix-scroll-area-scrollbar] {
+  /* Force scrollbars to be always visible with maximum specificity */
+  [data-radix-scroll-area-scrollbar][data-orientation="vertical"],
+  [data-radix-scroll-area-scrollbar][data-orientation="horizontal"] {
     opacity: 1 !important;
     visibility: visible !important;
+    display: flex !important;
     background: rgba(45, 45, 45, 0.2) !important;
-    transition: none !important;
+    transition: background-color 0.2s ease !important;
+    pointer-events: auto !important;
   }
   
-  [data-radix-scroll-area-scrollbar]:hover {
+  [data-radix-scroll-area-scrollbar][data-orientation="vertical"]:hover,
+  [data-radix-scroll-area-scrollbar][data-orientation="horizontal"]:hover {
     opacity: 1 !important;
     background: rgba(45, 45, 45, 0.3) !important;
   }
   
-  [data-radix-scroll-area-thumb] {
+  [data-radix-scroll-area-thumb][data-state] {
     background: rgba(100, 100, 100, 0.6) !important;
     opacity: 1 !important;
     visibility: visible !important;
+    display: block !important;
     border-radius: 3px !important;
     transition: background-color 0.2s ease !important;
   }
   
-  [data-radix-scroll-area-thumb]:hover {
+  [data-radix-scroll-area-thumb][data-state]:hover {
     background: rgba(140, 140, 140, 0.8) !important;
     opacity: 1 !important;
   }
 
-  /* Dark theme adjustments */
-  .dark [data-radix-scroll-area-scrollbar] {
+  /* Dark theme adjustments with maximum specificity */
+  .dark [data-radix-scroll-area-scrollbar][data-orientation="vertical"],
+  .dark [data-radix-scroll-area-scrollbar][data-orientation="horizontal"] {
     background: rgba(255, 255, 255, 0.1) !important;
   }
   
-  .dark [data-radix-scroll-area-scrollbar]:hover {
+  .dark [data-radix-scroll-area-scrollbar][data-orientation="vertical"]:hover,
+  .dark [data-radix-scroll-area-scrollbar][data-orientation="horizontal"]:hover {
     background: rgba(255, 255, 255, 0.15) !important;
   }
   
-  .dark [data-radix-scroll-area-thumb] {
+  .dark [data-radix-scroll-area-thumb][data-state] {
     background: rgba(200, 200, 200, 0.4) !important;
   }
   
-  .dark [data-radix-scroll-area-thumb]:hover {
+  .dark [data-radix-scroll-area-thumb][data-state]:hover {
     background: rgba(200, 200, 200, 0.6) !important;
+  }
+
+  /* Override any hiding animations or states */
+  [data-radix-scroll-area-scrollbar][data-state="hidden"] {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: flex !important;
+  }
+
+  [data-radix-scroll-area-thumb][data-state="hidden"] {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
   }
 
   /* Fallback scrollbar styling for any native scrollbars */
