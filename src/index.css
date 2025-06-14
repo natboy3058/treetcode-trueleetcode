@@ -92,19 +92,30 @@
 
   body {
     @apply bg-background text-foreground;
-    overflow: hidden; /* Remove global scrollbars */
+    overflow: hidden;
   }
 
-  /* Make scrollbars more visible */
-  .scroll-area-thumb {
-    background-color: hsl(var(--border)) !important;
+  /* Enhanced custom scrollbar styling - always visible like CodeMirror */
+  [data-radix-scroll-area-scrollbar] {
     opacity: 1 !important;
+    background: hsl(var(--muted)) !important;
   }
   
-  /* Custom scrollbar styling for better visibility */
+  [data-radix-scroll-area-thumb] {
+    background: hsl(var(--muted-foreground)) !important;
+    opacity: 0.8 !important;
+    border-radius: 4px !important;
+  }
+  
+  [data-radix-scroll-area-thumb]:hover {
+    background: hsl(var(--foreground)) !important;
+    opacity: 1 !important;
+  }
+
+  /* Fallback scrollbar styling for any native scrollbars */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 12px;
+    height: 12px;
   }
   
   ::-webkit-scrollbar-track {
@@ -112,11 +123,13 @@
   }
   
   ::-webkit-scrollbar-thumb {
-    background: hsl(var(--border));
+    background: hsl(var(--muted-foreground));
     border-radius: 4px;
+    opacity: 0.8;
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--muted-foreground));
+    background: hsl(var(--foreground));
+    opacity: 1;
   }
 }
