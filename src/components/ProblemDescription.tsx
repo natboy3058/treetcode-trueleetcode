@@ -145,32 +145,32 @@ const SolutionContent = ({ problem }: { problem: Problem }) => {
   }
 
   return (
-    <Tabs defaultValue={defaultTab} className="w-full flex-grow flex flex-col">
-      <TabsList className="px-4 border-b rounded-none bg-card justify-start shrink-0">
+    <div className="p-4 flex flex-col overflow-y-auto h-full">
+      <h2 className="text-xl font-bold mb-4 shrink-0">
+        {problem.solutionInfo!.approachTitle}
+      </h2>
+      <Tabs defaultValue={defaultTab} className="w-full flex-grow flex flex-col">
+        <TabsList className="border-b rounded-none bg-card justify-start shrink-0 -mx-4 px-4">
+          {problem.codeVariants.map((variant) =>
+            variant.solution ? (
+              <TabsTrigger
+                key={variant.language}
+                value={variant.language}
+                className="capitalize"
+              >
+                {variant.language}
+              </TabsTrigger>
+            ) : null
+          )}
+        </TabsList>
+
         {problem.codeVariants.map((variant) =>
           variant.solution ? (
-            <TabsTrigger
+            <TabsContent
               key={variant.language}
               value={variant.language}
-              className="capitalize"
+              className="mt-4 flex-grow"
             >
-              {variant.language}
-            </TabsTrigger>
-          ) : null
-        )}
-      </TabsList>
-
-      {problem.codeVariants.map((variant) =>
-        variant.solution ? (
-          <TabsContent
-            key={variant.language}
-            value={variant.language}
-            className="p-4 mt-0 flex-grow overflow-y-auto"
-          >
-            <div>
-              <h2 className="text-xl font-bold mb-4">
-                {problem.solutionInfo!.approachTitle}
-              </h2>
               <div className="h-96 mb-6 border rounded-md overflow-hidden">
                 <CodeEditor
                   code={variant.solution}
@@ -197,11 +197,11 @@ const SolutionContent = ({ problem }: { problem: Problem }) => {
                   </li>
                 </ul>
               </div>
-            </div>
-          </TabsContent>
-        ) : null
-      )}
-    </Tabs>
+            </TabsContent>
+          ) : null
+        )}
+      </Tabs>
+    </div>
   );
 };
 
@@ -217,10 +217,10 @@ export default function ProblemDescription({ problem, selectedLanguage, submissi
         <TabsContent value="question" className="p-4 overflow-y-auto flex-grow">
           <QuestionContent problem={problem} />
         </TabsContent>
-        <TabsContent value="solution" className="flex-grow flex flex-col mt-0">
+        <TabsContent value="solution" className="flex-grow flex flex-col mt-0 overflow-hidden">
           <SolutionContent problem={problem} />
         </TabsContent>
-        <TabsContent value="submissions" className="p-4 overflow-y-auto flex-grow">
+        <TabsContent value="submissions" className="p-4 overflow-y-auto flex-grow flex flex-col">
           <SubmissionsContent submissions={submissions} />
         </TabsContent>
       </Tabs>
