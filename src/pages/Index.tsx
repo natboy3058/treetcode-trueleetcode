@@ -47,17 +47,24 @@ export default function Index() {
   useEffect(() => {
     async function setupPyodide() {
       try {
-        // The path to pyodide files is now relative to the domain root
+        console.log("Starting Pyodide setup...");
+        
+        // Use version 0.26.4 to match the installed package
         const pyodideInstance = await loadPyodide({
-            indexURL: "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/"
+          indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/",
         });
+        
+        console.log("Pyodide loaded successfully");
         setPyodide(pyodideInstance);
         toast({ title: "Python environment ready!", description: "You can now run Python code." });
       } catch (error) {
-        console.error("Failed to load Pyodide:", error);
+        console.error("Detailed Pyodide error:", error);
+        console.error("Error type:", typeof error);
+        console.error("Error message:", error instanceof Error ? error.message : String(error));
+        
         toast({
           title: "Python environment failed to load",
-          description: "Python code execution will not be available.",
+          description: `Error: ${error instanceof Error ? error.message : 'Unknown error'}. Python code execution will not be available.`,
           variant: "destructive",
         });
       } finally {
