@@ -95,9 +95,11 @@
     overflow: hidden;
   }
 
-  /* Force scrollbars to be always visible with maximum specificity */
-  [data-radix-scroll-area-scrollbar][data-orientation="vertical"],
-  [data-radix-scroll-area-scrollbar][data-orientation="horizontal"] {
+  /* Permanent scrollbar styling - matches CodeMirror exactly */
+  .permanent-scrollbar,
+  .permanent-scrollbar[data-state],
+  .permanent-scrollbar[data-state="visible"],
+  .permanent-scrollbar[data-state="hidden"] {
     opacity: 1 !important;
     visibility: visible !important;
     display: flex !important;
@@ -106,13 +108,18 @@
     pointer-events: auto !important;
   }
   
-  [data-radix-scroll-area-scrollbar][data-orientation="vertical"]:hover,
-  [data-radix-scroll-area-scrollbar][data-orientation="horizontal"]:hover {
+  .permanent-scrollbar:hover,
+  .permanent-scrollbar[data-state]:hover,
+  .permanent-scrollbar[data-state="visible"]:hover,
+  .permanent-scrollbar[data-state="hidden"]:hover {
     opacity: 1 !important;
     background: rgba(45, 45, 45, 0.3) !important;
   }
   
-  [data-radix-scroll-area-thumb][data-state] {
+  .permanent-scrollbar-thumb,
+  .permanent-scrollbar-thumb[data-state],
+  .permanent-scrollbar-thumb[data-state="visible"],
+  .permanent-scrollbar-thumb[data-state="hidden"] {
     background: rgba(100, 100, 100, 0.6) !important;
     opacity: 1 !important;
     visibility: visible !important;
@@ -121,41 +128,41 @@
     transition: background-color 0.2s ease !important;
   }
   
-  [data-radix-scroll-area-thumb][data-state]:hover {
+  .permanent-scrollbar-thumb:hover,
+  .permanent-scrollbar-thumb[data-state]:hover,
+  .permanent-scrollbar-thumb[data-state="visible"]:hover,
+  .permanent-scrollbar-thumb[data-state="hidden"]:hover {
     background: rgba(140, 140, 140, 0.8) !important;
     opacity: 1 !important;
   }
 
-  /* Dark theme adjustments with maximum specificity */
-  .dark [data-radix-scroll-area-scrollbar][data-orientation="vertical"],
-  .dark [data-radix-scroll-area-scrollbar][data-orientation="horizontal"] {
+  /* Dark theme adjustments */
+  .dark .permanent-scrollbar,
+  .dark .permanent-scrollbar[data-state],
+  .dark .permanent-scrollbar[data-state="visible"],
+  .dark .permanent-scrollbar[data-state="hidden"] {
     background: rgba(255, 255, 255, 0.1) !important;
   }
   
-  .dark [data-radix-scroll-area-scrollbar][data-orientation="vertical"]:hover,
-  .dark [data-radix-scroll-area-scrollbar][data-orientation="horizontal"]:hover {
+  .dark .permanent-scrollbar:hover,
+  .dark .permanent-scrollbar[data-state]:hover,
+  .dark .permanent-scrollbar[data-state="visible"]:hover,
+  .dark .permanent-scrollbar[data-state="hidden"]:hover {
     background: rgba(255, 255, 255, 0.15) !important;
   }
   
-  .dark [data-radix-scroll-area-thumb][data-state] {
+  .dark .permanent-scrollbar-thumb,
+  .dark .permanent-scrollbar-thumb[data-state],
+  .dark .permanent-scrollbar-thumb[data-state="visible"],
+  .dark .permanent-scrollbar-thumb[data-state="hidden"] {
     background: rgba(200, 200, 200, 0.4) !important;
   }
   
-  .dark [data-radix-scroll-area-thumb][data-state]:hover {
+  .dark .permanent-scrollbar-thumb:hover,
+  .dark .permanent-scrollbar-thumb[data-state]:hover,
+  .dark .permanent-scrollbar-thumb[data-state="visible"]:hover,
+  .dark .permanent-scrollbar-thumb[data-state="hidden"]:hover {
     background: rgba(200, 200, 200, 0.6) !important;
-  }
-
-  /* Override any hiding animations or states */
-  [data-radix-scroll-area-scrollbar][data-state="hidden"] {
-    opacity: 1 !important;
-    visibility: visible !important;
-    display: flex !important;
-  }
-
-  [data-radix-scroll-area-thumb][data-state="hidden"] {
-    opacity: 1 !important;
-    visibility: visible !important;
-    display: block !important;
   }
 
   /* Fallback scrollbar styling for any native scrollbars */
