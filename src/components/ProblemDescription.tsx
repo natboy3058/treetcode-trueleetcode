@@ -36,7 +36,7 @@ const QuestionContent = ({ problem }: { problem: Problem }) => (
     >
       {problem.difficulty}
     </Badge>
-    <div className="mt-4 text-sm text-foreground/80 prose prose-sm max-w-none">
+    <div className="mt-4 text-sm text-foreground/80 prose prose-sm max-w-none [&_p]:mb-4 [&_a]:text-blue-600 [&_a]:underline hover:[&_a]:text-blue-800">
       <ReactMarkdown remarkPlugins={[remarkGfm]}>{problem.description}</ReactMarkdown>
     </div>
     
