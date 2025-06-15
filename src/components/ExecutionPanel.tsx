@@ -86,21 +86,21 @@ export default function ExecutionPanel({ testCases, results, isExecuting }: Exec
                      {typeof activeResult.actual === 'string' && activeResult.actual.startsWith('Error:') && (
                        <div>
                          <p className="font-semibold text-red-500">Stderr:</p>
-                         <pre className="bg-destructive/20 text-destructive p-2 rounded-md mt-1 text-xs whitespace-pre-wrap break-words">{activeResult.actual}</pre>
+                         <pre className="bg-destructive/20 text-destructive p-2 rounded-md mt-1 text-xs whitespace-pre-wrap">{activeResult.actual}</pre>
                        </div>
                      )}
                      <div>
                        <p className="font-semibold">Input:</p>
-                       <pre className="bg-background p-2 rounded-md mt-1 text-xs whitespace-pre-wrap break-words overflow-x-auto">{JSON.stringify(activeResult.input)}</pre>
+                       <pre className="bg-background p-2 rounded-md mt-1 text-xs whitespace-pre-wrap">{JSON.stringify(activeResult.input)}</pre>
                      </div>
                      <div>
                        <p className="font-semibold">Expected Output:</p>
-                       <pre className="bg-background p-2 rounded-md mt-1 text-xs whitespace-pre-wrap break-words overflow-x-auto">{JSON.stringify(activeResult.expected)}</pre>
+                       <pre className="bg-background p-2 rounded-md mt-1 text-xs whitespace-pre-wrap">{JSON.stringify(activeResult.expected)}</pre>
                      </div>
                      {!activeResult.passed && !(typeof activeResult.actual === 'string' && activeResult.actual.startsWith('Error:')) && (
                         <div>
                           <p className="font-semibold">Your Output:</p>
-                          <pre className="bg-background p-2 rounded-md mt-1 text-xs whitespace-pre-wrap break-words overflow-x-auto">{JSON.stringify(activeResult.actual)}</pre>
+                          <pre className="bg-background p-2 rounded-md mt-1 text-xs whitespace-pre-wrap">{JSON.stringify(activeResult.actual)}</pre>
                         </div>
                      )}
                    </div>
