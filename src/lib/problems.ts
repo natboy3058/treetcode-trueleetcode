@@ -1,4 +1,3 @@
-
 import _ from 'lodash';
 
 export interface Example {
@@ -244,7 +243,7 @@ var generateParenthesis = function(n) {
     id: "nba-team-trade",
     title: "NBA Team Trade Execution",
     difficulty: "Easy",
-    description: "You are the General Manager of an NBA team. The trade deadline is approaching, and you have just been granted a **Traded Player Exception (TPE)** worth a specific amount of money. A TPE allows a team to acquire players in a trade without sending back matching salaries.\n\nYou are in talks with another team and are looking to acquire two of their role players to bolster your roster. To make the trade legal under league rules, the combined salaries of the two players you receive must be exactly equal to your TPE.\n\nYour task is to analyze the other team's player salaries and find a pair whose combined salary perfectly matches your available TPE. Return the indices of the two players that make the trade work.\n\n**Data:**\n\nThe `salaries` array corresponds to the 2023-2024 season salary (in USD) for the following players on the Golden State Warriors, in order:\n\n`[Klay Thompson, Draymond Green, Andrew Wiggins, Chris Paul, Kevon Looney, Gary Payton II]`\n\nYou can verify these salaries on **[Spotrac's Golden State Warriors 2023-24 Salary Cap page](https://www.spotrac.com/nba/golden-state-warriors/cap/2023/)**.",
+    description: "You are the General Manager of an NBA team. The trade deadline is approaching, and you have just been granted a **Traded Player Exception (TPE)** worth a specific amount of money. A TPE allows a team to acquire players in a trade without sending back matching salaries.\n\nYou are in talks with another team and are looking to acquire two of their role players to bolster your roster. To make the trade legal under league rules, the combined salaries of the two players you receive must be exactly equal to your TPE.\n\nYour task is to analyze the other team's player salaries and find a pair whose combined salary perfectly matches your available TPE. Return the indices of the two players that make the trade work.\n\n---\n\n### Scenario Data\n\nThe `salaries` array corresponds to the 2023-2024 season salary (in USD) for the following players on the Golden State Warriors, in order:\n\n- Klay Thompson\n- Draymond Green\n- Andrew Wiggins\n- Chris Paul\n- Kevon Looney\n- Gary Payton II\n\nYou can verify these salaries on **[Spotrac's Golden State Warriors 2023-24 Salary Cap page](https://www.spotrac.com/nba/golden-state-warriors/cap/2023/)**.",
     examples: [
       {
         input: "salaries = [43219440, 22222222, 24256786, 30800000, 7500000, 8300000], trade_exception_value = 51519440",

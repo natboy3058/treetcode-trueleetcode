@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface ProblemDescriptionProps {
   problem: Problem;
@@ -34,7 +36,36 @@ const QuestionContent = ({ problem }: { problem: Problem }) => (
     >
       {problem.difficulty}
     </Badge>
-    <p className="mt-4 text-sm text-foreground/80 break-words">{problem.description}</p>
+    <div className="mt-4 text-sm text-foreground/80 break-words">
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          p: ({ node, ...props }) => <p className="mb-4 last:mb-0" {...props} />,
+          strong: ({ node, ...props }) => <strong className="font-semibold" {...props} />,
+          a: ({ node, ...props }) => (
+            <a
+              className="text-primary underline hover:text-primary/80"
+              target="_blank"
+              rel="noopener noreferrer"
+              {...props}
+            />
+          ),
+          code: ({ node, ...props }) => (
+            <code className="bg-muted font-mono px-1 py-0.5 rounded-sm text-xs" {...props} />
+          ),
+          hr: ({ node, ...props }) => <Separator className="my-6" {...props} />,
+          h3: ({ node, ...props }) => (
+            <h3 className="font-semibold text-base mt-6 mb-2" {...props} />
+          ),
+          ul: ({ node, ...props }) => (
+            <ul className="list-disc list-inside space-y-1 my-4" {...props} />
+          ),
+          li: ({ node, ...props }) => <li className="break-words" {...props} />,
+        }}
+      >
+        {problem.description}
+      </ReactMarkdown>
+    </div>
     
     <Separator className="my-6" />
 
