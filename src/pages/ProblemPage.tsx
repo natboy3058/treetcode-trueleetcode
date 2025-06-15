@@ -176,16 +176,27 @@ export default function ProblemPage() {
 
     for (const tc of testCases) {
       try {
+        let actualInput;
+        
+        // Handle NBA trade problem format where last element is the trade_exception_value
+        if (problem.id === "nba-team-trade") {
+          const salaries = tc.input.slice(0, -1);
+          const tradeException = tc.input[tc.input.length - 1];
+          actualInput = [salaries, tradeException];
+        } else {
+          actualInput = tc.input;
+        }
+        
         const userFunction = new Function('...args', `
           ${code}
           return ${variant.starterFunctionName}(...args);
         `);
         const startTime = performance.now();
-        const actual = userFunction(...tc.input);
+        const actual = userFunction(...actualInput);
         const endTime = performance.now();
         const passed = compareSolutions(actual, tc.expected);
         newResults.push({
-          input: tc.input,
+          input: actualInput,
           expected: tc.expected,
           actual,
           passed,
@@ -217,7 +228,20 @@ export default function ProblemPage() {
 
     for (const tc of testCases) {
       try {
-        const argsString = tc.input.map(arg => JSON.stringify(arg)).join(',');
+        let argsString;
+        let actualInput;
+        
+        // Handle NBA trade problem format where last element is the trade_exception_value
+        if (problem.id === "nba-team-trade") {
+          const salaries = tc.input.slice(0, -1);
+          const tradeException = tc.input[tc.input.length - 1];
+          argsString = `${JSON.stringify(salaries)}, ${tradeException}`;
+          actualInput = [salaries, tradeException];
+        } else {
+          argsString = tc.input.map(arg => JSON.stringify(arg)).join(',');
+          actualInput = tc.input;
+        }
+        
         const pythonCode = `
 import json
 ${code}
@@ -230,7 +254,7 @@ result
         const actual = JSON.parse(rawResult);
         const passed = compareSolutions(actual, tc.expected);
         newResults.push({
-          input: tc.input,
+          input: actualInput,
           expected: tc.expected,
           actual,
           passed,

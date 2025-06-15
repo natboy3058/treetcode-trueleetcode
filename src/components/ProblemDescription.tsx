@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface ProblemDescriptionProps {
   problem: Problem;
@@ -34,7 +36,9 @@ const QuestionContent = ({ problem }: { problem: Problem }) => (
     >
       {problem.difficulty}
     </Badge>
-    <p className="mt-4 text-sm text-foreground/80 break-words">{problem.description}</p>
+    <div className="mt-4 text-sm text-foreground/80 prose prose-sm max-w-none">
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>{problem.description}</ReactMarkdown>
+    </div>
     
     <Separator className="my-6" />
 
