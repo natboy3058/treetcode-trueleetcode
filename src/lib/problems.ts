@@ -1,3 +1,4 @@
+
 import _ from 'lodash';
 
 export interface Example {
@@ -243,81 +244,7 @@ var generateParenthesis = function(n) {
     id: "nba-team-trade",
     title: "NBA Team Trade Execution",
     difficulty: "Easy",
-    description: `
-You are the General Manager of an NBA team. The trade deadline is approaching and you've just been granted a **Traded Player Exception (TPE)** worth a specific amount.
-
-A TPE allows a team to acquire players in a trade _without_ sending back matching salaries.
-
-----
-
-**Scenario:**
-- You are negotiating with another team to acquire **two role players**.
-- In order for the trade to be legal, the **combined salary** of the two players you receive must be **exactly equal to your TPE**.
-
-Your task:  
-Analyze the other team's player salaries and find a pair whose combined salary perfectly matches your TPE.  
-**Return the indices of the two players that make the trade work.**
-
----
-
-**Data**
-
-The \`salaries\` array corresponds to the 2023-2024 season salary (in USD) for the following Golden State Warriors players, _in order_:
-- Klay Thompson
-- Draymond Green
-- Andrew Wiggins
-- Chris Paul
-- Kevon Looney
-- Gary Payton II
-
-\`\`\`
-[Klay Thompson, Draymond Green, Andrew Wiggins, Chris Paul, Kevon Looney, Gary Payton II]
-\`\`\`
-
-You can verify these salaries on **[Spotrac's Golden State Warriors 2023-24 Salary Cap page](https://www.spotrac.com/nba/golden-state-warriors/cap/2023/)**.
-
----
-
-**Example 1:**
-
-\`\`\`
-Input:
-salaries = [43219440, 22222222, 24256786, 30800000, 7500000, 8300000]
-trade_exception_value = 51519440
-\`\`\`
-
-**Output:** \`[0, 5]\`
-
-**Explanation:**  
-The salary of Klay Thompson (index 0) is $43,219,440.  
-The salary of Gary Payton II (index 5) is $8,300,000.  
-Their combined salary: 43,219,440 + 8,300,000 = 51,519,440 (matches the TPE exactly).
-
----
-
-**Example 2:**
-
-\`\`\`
-Input:
-salaries = [43219440, 22222222, 24256786, 30800000, 7500000, 8300000]
-trade_exception_value = 29722222
-\`\`\`
-**Output:** \`[1, 4]\`
-
-**Explanation:**  
-Draymond Green (index 1): $22,222,222  
-Kevon Looney (index 4): $7,500,000  
-Sum: 22,222,222 + 7,500,000 = 29,722,222
-
----
-
-**Constraints:**
-- \`2 <= salaries.length <= 15\`
-- \`1,000,000 <= salaries[i] <= 50,000,000\`
-- \`2,000,000 <= trade_exception_value <= 100,000,000\`
-- All inputs are 64-bit integers.
-- Only one valid answer exists.
-`,
+    description: "You are the General Manager of an NBA team. The trade deadline is approaching, and you have just been granted a **Traded Player Exception (TPE)** worth a specific amount of money. A TPE allows a team to acquire players in a trade without sending back matching salaries.\n\nYou are in talks with another team and are looking to acquire two of their role players to bolster your roster. To make the trade legal under league rules, the combined salaries of the two players you receive must be exactly equal to your TPE.\n\nYour task is to analyze the other team's player salaries and find a pair whose combined salary perfectly matches your available TPE. Return the indices of the two players that make the trade work.\n\n**Data:**\n\nThe `salaries` array corresponds to the 2023-2024 season salary (in USD) for the following players on the Golden State Warriors, in order:\n\n`[Klay Thompson, Draymond Green, Andrew Wiggins, Chris Paul, Kevon Looney, Gary Payton II]`\n\nYou can verify these salaries on **[Spotrac's Golden State Warriors 2023-24 Salary Cap page](https://www.spotrac.com/nba/golden-state-warriors/cap/2023/)**.",
     examples: [
       {
         input: "salaries = [43219440, 22222222, 24256786, 30800000, 7500000, 8300000], trade_exception_value = 51519440",
