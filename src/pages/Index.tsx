@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getProblems, Problem } from "@/lib/problems";
+import { problemManifests } from "@/data/problems";
 import {
   Table,
   TableBody,
@@ -15,11 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import EmailSignup from "@/components/EmailSignup";
 
 export default function Index() {
-  const [problems, setProblems] = useState<Problem[]>([]);
-
-  useEffect(() => {
-    setProblems(getProblems());
-  }, []);
+  const problems = problemManifests; // No need for useState/useEffect, it's a static import
 
   const getDifficultyClass = (difficulty: "Easy" | "Medium" | "Hard") => {
     switch (difficulty) {

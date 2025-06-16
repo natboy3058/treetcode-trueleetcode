@@ -6,7 +6,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { getProblem, Problem, TestCase, compareSolutions, Submission, ExecutionResult } from "@/lib/problems";
+import { Problem, Submission, ExecutionResult } from "@/lib/problems";
 import ProblemDescription from "@/components/ProblemDescription";
 import CodeEditor from "@/components/CodeEditor";
 import ExecutionPanel from "@/components/ExecutionPanel";
@@ -18,9 +18,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { loadPyodide, PyodideInterface } from "pyodide";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronUp, TreePine } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { usePyodide } from "@/components/providers/PyodideProvider";
+import { useCodeExecutor } from "@/hooks/useCodeExecutor";
 
 export default function ProblemPage() {
   const { problemId } = useParams<{ problemId: string }>();
@@ -30,14 +31,13 @@ export default function ProblemPage() {
   const [code, setCode] = useState("");
   const [results, setResults] = useState<ExecutionResult[]>([]);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
-  const [isActuallyExecuting, setIsActuallyExecuting] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<"python" | "javascript">("python");
-  const [pyodide, setPyodide] = useState<PyodideInterface | null>(null);
-  const [isPyodideLoading, setIsPyodideLoading] = useState(true);
   const [executionPanelSize, setExecutionPanelSize] = useState(35);
   const lastExecutionPanelSize = useRef(35);
 
   const { toast } = useToast();
+  const { isPyodideLoading } = usePyodide();
+  const { execute, isExecuting: isCodeExecuting } = useCodeExecutor();
 
   useEffect(() => {
     if (executionPanelSize > 0) {
@@ -50,56 +50,35 @@ export default function ProblemPage() {
         navigate("/");
         return;
     }
-    const currentProblem = getProblem(problemId);
-    if (currentProblem) {
-      setProblem(currentProblem);
-      const lang = currentProblem.defaultLanguage;
-      setSelectedLanguage(lang);
-      const variant = currentProblem.codeVariants.find(v => v.language === lang);
-      if(variant) {
-        setCode(variant.starterCode);
-      }
-      setResults([]);
-    } else {
+
+    const loadProblem = async () => {
+      try {
+        // Dynamic import based on problemId
+        const problemModule = await import(`../data/problems/${problemId}.ts`);
+        // The actual problem object will be the first export
+        const currentProblem = Object.values(problemModule)[0] as Problem;
+        
+        setProblem(currentProblem);
+        const lang = currentProblem.defaultLanguage;
+        setSelectedLanguage(lang);
+        const variant = currentProblem.codeVariants.find(v => v.language === lang);
+        if(variant) {
+          setCode(variant.starterCode);
+        }
+        setResults([]);
+      } catch (e) {
+        console.error("Failed to load problem", e);
         toast({
             title: "Problem not found",
             description: `The problem with ID "${problemId}" does not exist.`,
             variant: "destructive"
-        })
+        });
         navigate("/");
-    }
-  }, [problemId, navigate, toast]);
-
-  useEffect(() => {
-    async function setupPyodide() {
-      try {
-        console.log("Starting Pyodide setup...");
-        
-        // Use version 0.26.4 to match the installed package
-        const pyodideInstance = await loadPyodide({
-          indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/",
-        });
-        
-        console.log("Pyodide loaded successfully");
-        setPyodide(pyodideInstance);
-        toast({ title: "Python environment ready!", description: "You can now run Python code." });
-      } catch (error) {
-        console.error("Detailed Pyodide error:", error);
-        console.error("Error type:", typeof error);
-        console.error("Error message:", error instanceof Error ? error.message : String(error));
-        
-        toast({
-          title: "Python environment failed to load",
-          description: `Error: ${error instanceof Error ? error.message : 'Unknown error'}. Python code execution will not be available.`,
-          variant: "destructive",
-        });
-      } finally {
-        setIsPyodideLoading(false);
       }
-    }
-    setupPyodide();
-  }, [toast]);
+    };
 
+    loadProblem();
+  }, [problemId, navigate, toast]);
 
   const handleLanguageChange = (lang: "python" | "javascript") => {
     if (!problem) return;
@@ -113,34 +92,19 @@ export default function ProblemPage() {
 
   const handleRun = async () => {
     if (!problem) return;
-    setIsActuallyExecuting(true);
     setResults([]);
     // Run against the first 3 test cases for speed
     const testCasesToRun = problem.testCases.slice(0, 3);
-    
-    let newResults: ExecutionResult[];
-    if (selectedLanguage === 'python') {
-      newResults = await executePythonCode(testCasesToRun);
-    } else {
-      newResults = await executeJavaScriptCode(testCasesToRun);
-    }
+    const newResults = await execute(code, selectedLanguage, problem, testCasesToRun);
     setResults(newResults);
-    setIsActuallyExecuting(false);
   };
   
   const handleSubmit = async () => {
     if (!problem) return;
-    setIsActuallyExecuting(true);
     setResults([]);
     
-    let newResults: ExecutionResult[];
-    if (selectedLanguage === 'python') {
-      newResults = await executePythonCode(problem.testCases);
-    } else {
-      newResults = await executeJavaScriptCode(problem.testCases);
-    }
+    const newResults = await execute(code, selectedLanguage, problem, problem.testCases);
     setResults(newResults);
-    setIsActuallyExecuting(false);
 
     const hasError = newResults.some(r => typeof r.actual === 'string' && r.actual.startsWith('Error:'));
     const allPassed = !hasError && newResults.length > 0 && newResults.every(r => r.passed);
@@ -168,118 +132,11 @@ export default function ProblemPage() {
     setSubmissions(prev => [newSubmission, ...prev]);
   };
 
-  const executeJavaScriptCode = async (testCases: TestCase[]): Promise<ExecutionResult[]> => {
-    if (!problem) return [];
-    const variant = problem.codeVariants.find(v => v.language === "javascript");
-    if (!variant) return [];
-
-    const newResults: ExecutionResult[] = [];
-
-    for (const tc of testCases) {
-      try {
-        let actualInput;
-        
-        // Handle NBA trade problem format where last element is the trade_exception_value
-        if (problem.id === "nba-team-trade") {
-          const salaries = tc.input.slice(0, -1);
-          const tradeException = tc.input[tc.input.length - 1];
-          actualInput = [salaries, tradeException];
-        } else {
-          actualInput = tc.input;
-        }
-        
-        const userFunction = new Function('...args', `
-          ${code}
-          return ${variant.starterFunctionName}(...args);
-        `);
-        const startTime = performance.now();
-        const actual = userFunction(...actualInput);
-        const endTime = performance.now();
-        const passed = compareSolutions(actual, tc.expected);
-        newResults.push({
-          input: actualInput,
-          expected: tc.expected,
-          actual,
-          passed,
-          runtime: (endTime - startTime).toFixed(2) + "ms",
-        });
-      } catch (error: any) {
-        newResults.push({
-          input: tc.input,
-          expected: tc.expected,
-          actual: `Error: ${error.message}`,
-          passed: false,
-          runtime: "N/A",
-        });
-        break;
-      }
-    }
-    return newResults;
-  }
-
-  const executePythonCode = async (testCases: TestCase[]): Promise<ExecutionResult[]> => {
-    if (!problem || !pyodide) {
-      toast({ title: "Python Not Ready", description: "The Python environment is still loading or failed to load.", variant: "destructive" });
-      return [];
-    }
-    const variant = problem.codeVariants.find(v => v.language === "python");
-    if (!variant) return [];
-
-    const newResults: ExecutionResult[] = [];
-
-    for (const tc of testCases) {
-      try {
-        let argsString;
-        let actualInput;
-        
-        // Handle NBA trade problem format - pass salaries as first argument, trade_exception as second
-        if (problem.id === "nba-team-trade") {
-          const salaries = tc.input.slice(0, -1).flat(); // Flatten in case it's nested
-          const tradeException = tc.input[tc.input.length - 1];
-          argsString = `${JSON.stringify(salaries)}, ${tradeException}`;
-          actualInput = [salaries, tradeException];
-        } else {
-          argsString = tc.input.map(arg => JSON.stringify(arg)).join(',');
-          actualInput = tc.input;
-        }
-        
-        const pythonCode = `
-import json
-${code}
-result = json.dumps(${variant.starterFunctionName}(${argsString}))
-result
-`;
-        const startTime = performance.now();
-        const rawResult = await pyodide.runPythonAsync(pythonCode);
-        const endTime = performance.now();
-        const actual = JSON.parse(rawResult);
-        const passed = compareSolutions(actual, tc.expected);
-        newResults.push({
-          input: actualInput,
-          expected: tc.expected,
-          actual,
-          passed,
-          runtime: (endTime - startTime).toFixed(2) + "ms",
-        });
-      } catch (error: any) {
-        newResults.push({
-          input: tc.input,
-          expected: tc.expected,
-          actual: `Error: ${error.message}`,
-          passed: false,
-          runtime: "N/A",
-        });
-        break;
-      }
-    }
-    return newResults;
-  }
-
   const toggleConsole = () => {
     setExecutionPanelSize(size => size > 0 ? 0 : lastExecutionPanelSize.current);
   };
 
-  const isExecuting = isActuallyExecuting || (selectedLanguage === 'python' && isPyodideLoading);
+  const isExecuting = isCodeExecuting || (selectedLanguage === 'python' && isPyodideLoading);
 
   if (!problem) {
     return (
