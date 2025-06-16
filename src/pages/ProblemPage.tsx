@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
@@ -231,9 +232,9 @@ export default function ProblemPage() {
         let argsString;
         let actualInput;
         
-        // Handle NBA trade problem format where last element is the trade_exception_value
+        // Handle NBA trade problem format - pass salaries as first argument, trade_exception as second
         if (problem.id === "nba-team-trade") {
-          const salaries = tc.input.slice(0, -1);
+          const salaries = tc.input.slice(0, -1).flat(); // Flatten in case it's nested
           const tradeException = tc.input[tc.input.length - 1];
           argsString = `${JSON.stringify(salaries)}, ${tradeException}`;
           actualInput = [salaries, tradeException];

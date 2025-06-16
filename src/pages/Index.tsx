@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import EmailSignup from "@/components/EmailSignup";
 
 export default function Index() {
   const [problems, setProblems] = useState<Problem[]>([]);
@@ -32,7 +33,7 @@ export default function Index() {
   };
 
   return (
-    <div className="container mx-auto py-8">
+    <div className="container mx-auto py-8 space-y-8">
       <Card>
         <CardHeader>
           <CardTitle>Problems</CardTitle>
@@ -73,6 +74,24 @@ export default function Index() {
           </Table>
         </CardContent>
       </Card>
+
+      <div className="flex justify-center">
+        <EmailSignup />
+      </div>
+
+      <div className="text-center py-4">
+        <p className="text-sm text-muted-foreground">
+          Built by{" "}
+          <a 
+            href="https://nat3058.github.io" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-primary hover:underline font-medium"
+          >
+            Nathan N.
+          </a>
+        </p>
+      </div>
     </div>
   );
 }
