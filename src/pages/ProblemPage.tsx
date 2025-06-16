@@ -290,7 +290,7 @@ result
   }
 
   return (
-    <main className="h-[calc(100vh-3.5rem)] w-full">
+      <main className="h-[calc(100vh-4rem)] w-full">
       <div className="h-full w-full">
         <ResizablePanelGroup direction="horizontal">
           <ResizablePanel defaultSize={45} minSize={30} className="h-full">
