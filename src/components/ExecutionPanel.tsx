@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { TestCase, ExecutionResult } from "@/lib/problems";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useParams } from "react-router-dom";
+import { formatTestCaseInput, formatTestCaseOutput } from "@/lib/formatters";
 
 interface ExecutionPanelProps {
   testCases: TestCase[];
@@ -35,16 +36,6 @@ export default function ExecutionPanel({ testCases, results, isExecuting }: Exec
     return { text: "Wrong Answer", className: "text-red-500" };
   }
 
-  const formatTestCaseInput = (input: any[]) => {
-    // For NBA trade problem, format as [salaries_array, trade_exception_value]
-    if (problemId === "nba-team-trade" && input.length >= 2) {
-      const salaries = input.slice(0, -1);
-      const tradeException = input[input.length - 1];
-      return JSON.stringify([salaries, tradeException]);
-    }
-    return JSON.stringify(input);
-  };
-
   const passedCount = results.filter(r => r.passed).length;
   const totalCount = results.length;
   const activeResult = results[activeResultCaseIndex];
@@ -52,18 +43,29 @@ export default function ExecutionPanel({ testCases, results, isExecuting }: Exec
   return (
     <div className="h-full bg-card border-t border-border">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
-        <TabsList className="bg-card px-2 border-b rounded-none justify-start shrink-0">
-          <TabsTrigger value="testcase">Test Case</TabsTrigger>
-          <TabsTrigger value="result" disabled={results.length === 0}>Output</TabsTrigger>
+        <TabsList className="bg-card px-4 border-b rounded-none justify-start shrink-0 h-12">
+          <TabsTrigger value="testcase" className="px-4 py-2">Test Case</TabsTrigger>
+          <TabsTrigger value="result" disabled={results.length === 0} className="px-4 py-2">Output</TabsTrigger>
         </TabsList>
         <TabsContent value="testcase" className="flex-1 mt-0 min-h-0">
           <ScrollArea className="h-full">
-            <div className="p-4">
+            <div className="p-6">
               {testCases.map((tc, index) => (
-                 <div key={index} className="mb-2">
-                  <p className="font-semibold text-sm">Case {index + 1}</p>
-                  <div className="mt-1 bg-background p-2 text-xs font-mono rounded-md break-all">
-                    Input: {formatTestCaseInput(tc.input)}
+                 <div key={index} className="mb-6 p-4 bg-background rounded-lg border">
+                  <p className="font-semibold text-sm mb-3 text-muted-foreground">Case {index + 1}</p>
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-xs font-medium text-muted-foreground mb-1">Input:</p>
+                      <div className="bg-muted/50 p-3 text-sm font-mono rounded-md break-all">
+                        {formatTestCaseInput(tc.input, problemId)}
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-muted-foreground mb-1">Expected Output:</p>
+                      <div className="bg-muted/50 p-3 text-sm font-mono rounded-md break-all">
+                        {formatTestCaseOutput(tc.expected, problemId)}
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -72,12 +74,14 @@ export default function ExecutionPanel({ testCases, results, isExecuting }: Exec
         </TabsContent>
         <TabsContent value="result" className="flex-1 mt-0 min-h-0">
            <ScrollArea className="h-full">
-            <div className="p-4 flex flex-col gap-4">
+            <div className="p-6 flex flex-col gap-6">
               {results.length > 0 && activeResult && (
                 <>
-                  <div className="flex justify-between items-center">
-                    <h2 className={`text-xl font-bold ${getOverallStatus().className}`}>{getOverallStatus().text}</h2>
-                    <p className="text-sm font-medium">Passed: {passedCount} / {totalCount}</p>
+                  <div className="flex justify-between items-center pb-4 border-b">
+                    <h2 className={`text-2xl font-bold ${getOverallStatus().className}`}>{getOverallStatus().text}</h2>
+                    <p className="text-sm font-medium bg-muted px-3 py-1 rounded-full">
+                      Passed: {passedCount} / {totalCount}
+                    </p>
                   </div>
                   
                   <div className="flex gap-2 flex-wrap">
@@ -94,27 +98,45 @@ export default function ExecutionPanel({ testCases, results, isExecuting }: Exec
                     ))}
                   </div>
 
-                   <div className="font-mono text-sm space-y-4">
+                   <div className="font-mono space-y-6">
                      {typeof activeResult.actual === 'string' && activeResult.actual.startsWith('Error:') && (
-                       <div>
-                         <p className="font-semibold text-red-500">Stderr:</p>
-                         <pre className="bg-destructive/20 text-destructive p-2 rounded-md mt-1 text-xs whitespace-pre-wrap break-all">{activeResult.actual}</pre>
+                       <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+                         <p className="font-semibold text-destructive mb-2">Runtime Error:</p>
+                         <pre className="text-destructive text-sm whitespace-pre-wrap break-all">{activeResult.actual}</pre>
                        </div>
                      )}
-                     <div>
-                       <p className="font-semibold">Input:</p>
-                       <pre className="bg-background p-2 rounded-md mt-1 text-xs whitespace-pre-wrap break-all">{JSON.stringify(activeResult.input)}</pre>
+                     
+                     <div className="space-y-4">
+                       <div className="p-4 bg-muted/30 rounded-lg">
+                         <p className="font-semibold mb-2 text-sm">Input:</p>
+                         <pre className="text-sm whitespace-pre-wrap break-all">
+                           {formatTestCaseInput(activeResult.input, problemId)}
+                         </pre>
+                       </div>
+                       
+                       <div className="p-4 bg-muted/30 rounded-lg">
+                         <p className="font-semibold mb-2 text-sm">Expected Output:</p>
+                         <pre className="text-sm whitespace-pre-wrap break-all">
+                           {formatTestCaseOutput(activeResult.expected, problemId)}
+                         </pre>
+                       </div>
+                       
+                       {!activeResult.passed && !(typeof activeResult.actual === 'string' && activeResult.actual.startsWith('Error:')) && (
+                          <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                            <p className="font-semibold mb-2 text-sm text-red-700">Your Output:</p>
+                            <pre className="text-sm whitespace-pre-wrap break-all text-red-600">
+                              {formatTestCaseOutput(activeResult.actual, problemId)}
+                            </pre>
+                          </div>
+                       )}
+                       
+                       {activeResult.passed && (
+                         <div className="flex items-center gap-2 text-green-600 text-sm">
+                           <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+                           <span>Test case passed in {activeResult.runtime}</span>
+                         </div>
+                       )}
                      </div>
-                     <div>
-                       <p className="font-semibold">Expected Output:</p>
-                       <pre className="bg-background p-2 rounded-md mt-1 text-xs whitespace-pre-wrap break-all">{JSON.stringify(activeResult.expected)}</pre>
-                     </div>
-                     {!activeResult.passed && !(typeof activeResult.actual === 'string' && activeResult.actual.startsWith('Error:')) && (
-                        <div>
-                          <p className="font-semibold">Your Output:</p>
-                          <pre className="bg-background p-2 rounded-md mt-1 text-xs whitespace-pre-wrap break-all">{JSON.stringify(activeResult.actual)}</pre>
-                        </div>
-                     )}
                    </div>
                 </>
               )}

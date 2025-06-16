@@ -26,50 +26,65 @@ interface ProblemDescriptionProps {
 
 const QuestionContent = ({ problem }: { problem: Problem }) => (
   <>
-    <h1 className="text-2xl font-bold mb-2">{problem.title}</h1>
-    <Badge
-      className={`
-        ${problem.difficulty === "Easy" && "bg-green-600 hover:bg-green-600 text-primary-foreground"}
-        ${problem.difficulty === "Medium" && "bg-yellow-500 hover:bg-yellow-500 text-primary-foreground"}
-        ${problem.difficulty === "Hard" && "bg-red-600 hover:bg-red-600 text-primary-foreground"}
-      `}
-    >
-      {problem.difficulty}
-    </Badge>
-    <div className="mt-4 text-sm text-foreground/80 prose prose-sm max-w-none [&_p]:mb-4 [&_a]:text-blue-600 [&_a]:underline hover:[&_a]:text-blue-800">
+    <div className="flex items-start justify-between mb-4">
+      <h1 className="text-3xl font-bold text-foreground leading-tight">{problem.title}</h1>
+      <Badge
+        className={`
+          shrink-0 ml-4 px-3 py-1 text-sm font-medium
+          ${problem.difficulty === "Easy" && "bg-green-600 hover:bg-green-600 text-white"}
+          ${problem.difficulty === "Medium" && "bg-yellow-500 hover:bg-yellow-500 text-white"}
+          ${problem.difficulty === "Hard" && "bg-red-600 hover:bg-red-600 text-white"}
+        `}
+      >
+        {problem.difficulty}
+      </Badge>
+    </div>
+    
+    <div className="mt-6 text-base text-foreground/90 prose prose-base max-w-none [&_p]:mb-4 [&_a]:text-blue-600 [&_a]:underline hover:[&_a]:text-blue-800 [&_em]:text-muted-foreground [&_em]:italic leading-relaxed">
       <ReactMarkdown remarkPlugins={[remarkGfm]}>{problem.description}</ReactMarkdown>
     </div>
     
-    <Separator className="my-6" />
+    <Separator className="my-8" />
 
     {problem.examples.map((example, index) => (
-      <div key={index} className="mb-4">
-        <p className="font-semibold text-sm">Example {index + 1}:</p>
-        <Card className="mt-2 bg-background">
-          <CardContent className="p-4">
-            <p className="font-mono text-xs break-words">
-              <strong>Input:</strong> {example.input}
-            </p>
-            <p className="font-mono text-xs mt-2 break-words">
-              <strong>Output:</strong> {example.output}
-            </p>
-            {example.explanation && (
-              <p className="font-mono text-xs mt-2 break-words">
-                <strong>Explanation:</strong> {example.explanation}
-              </p>
-            )}
+      <div key={index} className="mb-6">
+        <p className="font-semibold text-lg mb-3 text-foreground">Example {index + 1}:</p>
+        <Card className="bg-muted/30 border-muted-foreground/20">
+          <CardContent className="p-5">
+            <div className="space-y-3">
+              <div>
+                <p className="font-semibold text-sm text-muted-foreground mb-1">Input:</p>
+                <p className="font-mono text-sm bg-background p-3 rounded border break-words">
+                  {example.input}
+                </p>
+              </div>
+              <div>
+                <p className="font-semibold text-sm text-muted-foreground mb-1">Output:</p>
+                <p className="font-mono text-sm bg-background p-3 rounded border break-words">
+                  {example.output}
+                </p>
+              </div>
+              {example.explanation && (
+                <div>
+                  <p className="font-semibold text-sm text-muted-foreground mb-1">Explanation:</p>
+                  <p className="text-sm leading-relaxed break-words">
+                    {example.explanation}
+                  </p>
+                </div>
+              )}
+            </div>
           </CardContent>
         </Card>
       </div>
     ))}
     
-    <Separator className="my-6" />
+    <Separator className="my-8" />
 
     <div>
-      <p className="font-semibold text-sm">Constraints:</p>
-      <ul className="list-disc list-inside mt-2 space-y-1">
+      <p className="font-semibold text-lg mb-4 text-foreground">Constraints:</p>
+      <ul className="list-disc list-inside space-y-2 pl-4">
         {problem.constraints.map((constraint, index) => (
-          <li key={index} className="font-mono text-xs break-words">{constraint}</li>
+          <li key={index} className="font-mono text-sm break-words leading-relaxed">{constraint}</li>
         ))}
       </ul>
     </div>
@@ -216,14 +231,14 @@ export default function ProblemDescription({ problem, selectedLanguage, submissi
   return (
     <div className="h-full bg-card border-r border-border">
       <Tabs defaultValue="question" className="h-full flex flex-col">
-        <TabsList className="px-2 border-b rounded-none bg-card justify-start shrink-0">
-          <TabsTrigger value="question">Question</TabsTrigger>
-          <TabsTrigger value="solution">Solution</TabsTrigger>
-          <TabsTrigger value="submissions">Submissions</TabsTrigger>
+        <TabsList className="px-4 border-b rounded-none bg-card justify-start shrink-0 h-12">
+          <TabsTrigger value="question" className="px-4 py-2">Question</TabsTrigger>
+          <TabsTrigger value="solution" className="px-4 py-2">Solution</TabsTrigger>
+          <TabsTrigger value="submissions" className="px-4 py-2">Submissions</TabsTrigger>
         </TabsList>
         <TabsContent value="question" className="flex-1 mt-0 min-h-0">
           <ScrollArea className="h-full">
-            <div className="p-4">
+            <div className="p-6">
               <QuestionContent problem={problem} />
             </div>
           </ScrollArea>
@@ -233,7 +248,7 @@ export default function ProblemDescription({ problem, selectedLanguage, submissi
         </TabsContent>
         <TabsContent value="submissions" className="flex-1 mt-0 min-h-0">
           <ScrollArea className="h-full">
-            <div className="p-4">
+            <div className="p-6">
               <SubmissionsContent submissions={submissions} />
             </div>
           </ScrollArea>

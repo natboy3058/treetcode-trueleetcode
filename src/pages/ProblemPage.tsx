@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import { loadPyodide, PyodideInterface } from "pyodide";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, TreePine } from "lucide-react";
 
 export default function ProblemPage() {
   const { problemId } = useParams<{ problemId: string }>();
