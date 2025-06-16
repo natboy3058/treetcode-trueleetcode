@@ -7,7 +7,7 @@ export default function Header() {
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center space-x-3">
           <img 
-            src="/lovable-uploads/1586a5a3-e1fb-4f9b-9e5a-4d294cb8eb5f.png" 
+            src="/lovable-uploads/treetcode-logo.png" 
             alt="Treetcode Logo" 
             className="h-8 w-8"
           />
