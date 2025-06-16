@@ -1,34 +1,53 @@
+// src/components/EmailSignup.tsx
 
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+
+// Helper function to encode form data for submission
+const encode = (data: { [key: string]: any }) => {
+  return Object.keys(data)
+    .map((key) => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
+    .join("&");
+};
 
 export default function EmailSignup() {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!email) return;
-    
+
     setIsSubmitting(true);
-    
+
     try {
-      // Netlify handles the form submission automatically
+      // This is the correct AJAX submission logic for Netlify
+      await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: encode({
+          "form-name": "treetcode-updates",
+          email: email,
+        }),
+      });
+
+      // This code now runs only AFTER a successful submission
       toast({
         title: "Success!",
         description: "Thanks for signing up! You'll receive updates about new problems every week.",
-        className: "bg-green-600 border-green-600 text-white"
+        className: "bg-green-600 border-green-600 text-white",
       });
-      setEmail("");
+      setEmail(""); // Clear the form on success
     } catch (error) {
+      console.error(error);
       toast({
         title: "Error",
         description: "Something went wrong. Please try again.",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);
@@ -44,9 +63,12 @@ export default function EmailSignup() {
         </p>
       </CardHeader>
       <CardContent>
+        {/*
+          This form is for the user. It no longer needs data-netlify,
+          but we keep the name and the hidden input for best practice.
+        */}
         <form 
           name="treetcode-updates" 
-          data-netlify="true" 
           onSubmit={handleSubmit}
           className="space-y-4"
         >
