@@ -233,7 +233,7 @@ export default function ProblemPage() {
         
         // Handle NBA trade problem format where last element is the trade_exception_value
         if (problem.id === "nba-team-trade") {
-          const salaries = tc.input.slice(0, -1);
+          const salaries = tc.input.slice(0, -1).flat();
           const tradeException = tc.input[tc.input.length - 1];
           argsString = `${JSON.stringify(salaries)}, ${tradeException}`;
           actualInput = [salaries, tradeException];
