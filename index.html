@@ -1,62 +1,42 @@
-
 <!DOCTYPE html>
 <html lang="en" class="dark">
-  <!-- <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Treetcode</title>
-    <meta name="description" content="Treetcode - Leetcode but with true real life data" />
-    <meta name="author" content="Nathan N." />
-
-    <link rel="icon" type="image/png" href="/lovable-uploads/treetcode-logo.png" />
-    <link rel="apple-touch-icon" href="/lovable-uploads/treetcode-logo.png" />
-
-    <meta property="og:title" content="Treetcode" />
-    <meta property="og:description" content="Treetcode - Leetcode but with true real life data" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="/lovable-uploads/treetcode-logo.png" />
-
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="/lovable-uploads/treetcode-logo.png" />
-  </head> -->
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Treetcode</title>
+    
+    <!-- Standard Meta -->
     <meta name="description" content="Treetcode - Leetcode but with true real life data" />
     <meta name="author" content="Nathan N." />
 
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="/lovable-uploads/treetcode-logo.png" />
     <link rel="apple-touch-icon" href="/lovable-uploads/treetcode-logo.png" />
 
-    <!-- === OPEN GRAPH / SOCIAL MEDIA TAGS (THE FIX IS HERE) === -->
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Treetcode" />
+    <meta property="og:url" content="https://treetcode.netlify.app/" />
     <meta property="og:title" content="Treetcode" />
     <meta property="og:description" content="Leetcode but with true real life data" />
-    <meta property="og:type" content="website" />
-
-    <!-- 1. ADD a canonical URL for your site -->
-    <meta property="og:url" content="https://treetcode.netlify.app/" />
-    
-    <!-- 2. USE an absolute URL for the image -->
     <meta property="og:image" content="https://treetcode.netlify.app/lovable-uploads/treetcode-logo.png" />
-    
-    <meta property="og:site_name" content="Treetcode" />
 
-    <!-- === TWITTER CARD TAGS === -->
-    <!-- Note: Twitter uses Open Graph tags as a fallback, but it's good to be explicit -->
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://treetcode.netlify.app/" />
     <meta name="twitter:title" content="Treetcode" />
-    <meta name="twitter:description" content="Leetcode but with true real life data. Built using @lovable_dev" />
-    
-    <!-- 3. USE an absolute URL for the Twitter image as well -->
+    <meta name="twitter:description" content="Leetcode but with true real life data" />
     <meta name="twitter:image" content="https://treetcode.netlify.app/lovable-uploads/treetcode-logo.png" />
   </head>
 
   <body>
     <div id="root"></div>
+    
+    <!-- THIS IS THE CRITICAL LINE FOR THE DEV SERVER. -->
+    <!-- It points to your source code, allowing Vite to work its magic. -->
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- The hidden Netlify form for production builds. -->
     <form name="treetcode-updates" netlify netlify-honeypot="bot-field" hidden>
       <input type="email" name="email" />
     </form>
