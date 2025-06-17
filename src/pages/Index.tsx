@@ -90,24 +90,24 @@ export default function Index() {
         </p>
       </div>
       */}
-      <footer className="border-t pt-6">
-        <div className="container flex flex-col items-center justify-between gap-4 sm:flex-row">
-          <p className="text-sm text-muted-foreground">
-            {/* © {new Date().getFullYear()} Treetcode. All rights reserved. */}
-          </p>
-          <p className="text-sm text-muted-foreground">
-            Built by{" "}
-            <a
-              href="https://nat3058.github.io"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 font-medium text-primary underline-offset-4 ring-offset-background transition-colors hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            >
-              <span>Nathan N.</span>
-            </a>
-          </p>
-        </div>
-      </footer>
+     <footer className="border-t pt-6">
+      <div className="container flex flex-col items-center justify-center gap-4 sm:flex-row sm:justify-center">
+        <p className="text-sm text-muted-foreground">
+          {/* {new Date().getFullYear()} Treetcode. All rights reserved. */}
+        </p>
+        <p className="text-sm text-muted-foreground">
+          Built by{" "}
+          <a
+            href="https://nat3058.github.io"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-blue-500 hover:text-blue-700 transition-colors"
+          >
+            <span>Nathan N.</span> <span className="text-xs">↗</span>
+          </a>
+        </p>
+      </div>
+     </footer>
     </div>
   );
 }
