@@ -1,0 +1,10 @@
+# Netlify Build Settings
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Single-Page Application (SPA) Rewrite Rule
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
