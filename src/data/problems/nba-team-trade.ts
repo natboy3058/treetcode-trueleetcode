@@ -25,7 +25,7 @@ export const nbaTeamTradeProblem: Problem = {
     "All inputs are 64-bit integers.",
     "Only one valid answer exists."
   ],
-  defaultLanguage: "javascript",
+  defaultLanguage: "python",
   codeVariants: [
     {
       language: "javascript",

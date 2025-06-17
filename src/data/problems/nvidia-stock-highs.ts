@@ -17,7 +17,7 @@ export const nvidiaStockHighsProblem: Problem = {
     "1 <= prices.length <= 10^5",
     "0.0 <= prices[i] <= 2000.0"
   ],
-  defaultLanguage: "javascript",
+  defaultLanguage: "python",
   codeVariants: [
     {
       language: "javascript",

@@ -27,7 +27,7 @@ export const twoSumProblem: Problem = {
     "-10^9 <= target <= 10^9",
     "Only one valid answer exists."
   ],
-  defaultLanguage: "javascript",
+  defaultLanguage: "python",
   codeVariants: [
     {
       language: "javascript",
